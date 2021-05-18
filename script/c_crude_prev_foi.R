@@ -10,10 +10,10 @@ options(warn = -1)
 #======================================================================================
 
 #subset for a correct dataset
-crude = pcvpa.mod %>% select(nvtcarr, agegp, surv) %>% group_by(surv)
+crude = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex, nochild5) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_crude = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = crude)
+model_crude = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), na.action = na.exclude, data = crude)
 crude$fit = predict.gam(model_crude, type = "response", se.fit = TRUE)$fit
 crude$fit_lci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
 crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))

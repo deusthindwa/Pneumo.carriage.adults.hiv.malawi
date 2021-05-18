@@ -5,9 +5,15 @@
 
 #=======================================================================
 
-#load required packages
-pcvpa.packages <- c("tidyverse", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", "gratia", "MuMIn","PropCIs", "forecast", "asbio", "scam", "here")
-lapply(pcvpa.packages, library, character.only = TRUE)
+# load the require packages
+if (!require(pacman)){
+  install.packages("pacman")
+}
+pacman::p_load(char = c("tidyverse", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
+                        "MuMIn","PropCIs", "forecast", "asbio", "scam", "here"))
+
+Yesoptions(stringsAsFactors = FALSE)
+setwd(here::here())
 
 #load phirst datasets (household-level, individual-level, follow-up & antibiotic use)
 pcvpa <- read.dta13(here("data", "PCVPA.dta"))
@@ -100,17 +106,8 @@ pcvpa.mod$sex <- if_else(pcvpa.mod$sex == "Female", 0L,
                          if_else(pcvpa.mod$sex == "Male", 1L, NA_integer_))
 
 #ART duration
-#pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <2, 0L, 
-#                            if_else(pcvpa.mod$artdur >=2 & pcvpa.mod$artdur <7, 1L, 
-#                                    if_else(pcvpa.mod$artdur >=7 & pcvpa.mod$artdur <20, 2L, NA_integer_)))
-
-#ART duration
 pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <=3, 0L, 
-                                    if_else(pcvpa.mod$artdur >=3 & pcvpa.mod$artdur <20, 1L, NA_integer_))
-
-#ART duration
-#pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <7, 0L, 
-#                                    if_else(pcvpa.mod$artdur >=7 & pcvpa.mod$artdur <20, 1L, NA_integer_))
+                                    if_else(pcvpa.mod$artdur >3 & pcvpa.mod$artdur <20, 1L, NA_integer_))
 
 #ART regimen
 pcvpa.mod$artreg <- if_else(pcvpa.mod$artreg == "First line", 0L,
@@ -126,7 +123,7 @@ pcvpa.mod$cd4cnt <- if_else(pcvpa.mod$cd4cnt < 250, 0L,
 
 #adults living with children in the household
 pcvpa.mod$nochild5 <- if_else(pcvpa.mod$nochild5 == 0, 0L, 
-                              if_else(pcvpa.mod$nochild5 >1 & pcvpa.mod$nochild5 <5, 1L, NA_integer_))
+                              if_else(pcvpa.mod$nochild5 >=1 & pcvpa.mod$nochild5 <5, 1L, NA_integer_))
 
 #social economic status
 pcvpa.mod$sescat <- if_else(pcvpa.mod$sescat == "Low", 0L, 
