@@ -100,9 +100,13 @@ pcvpa.mod$sex <- if_else(pcvpa.mod$sex == "Female", 0L,
                          if_else(pcvpa.mod$sex == "Male", 1L, NA_integer_))
 
 #ART duration
-pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <2, 0L, 
-                            if_else(pcvpa.mod$artdur >=2 & pcvpa.mod$artdur <7, 1L, 
-                                    if_else(pcvpa.mod$artdur >=7 & pcvpa.mod$artdur <20, 2L, NA_integer_)))
+#pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <2, 0L, 
+#                            if_else(pcvpa.mod$artdur >=2 & pcvpa.mod$artdur <7, 1L, 
+#                                    if_else(pcvpa.mod$artdur >=7 & pcvpa.mod$artdur <20, 2L, NA_integer_)))
+
+#ART duration
+pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <=3, 0L, 
+                                    if_else(pcvpa.mod$artdur >=3 & pcvpa.mod$artdur <20, 1L, NA_integer_))
 
 #ART duration
 #pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <7, 0L, 
@@ -117,8 +121,8 @@ pcvpa.mod$ctx <- if_else(pcvpa.mod$ctx == "No", 0L,
                          if_else(pcvpa.mod$ctx =="Yes", 1L, NA_integer_))
 
 #cd4+ count
-pcvpa.mod$cd4cnt <- if_else(pcvpa.mod$cd4cnt < 350, 0L, 
-                            if_else(pcvpa.mod$cd4cnt >=350 & pcvpa.mod$cd4cnt < 3000, 1L, NA_integer_))
+pcvpa.mod$cd4cnt <- if_else(pcvpa.mod$cd4cnt < 250, 0L, 
+                            if_else(pcvpa.mod$cd4cnt >=250 & pcvpa.mod$cd4cnt < 3000, 1L, NA_integer_))
 
 #adults living with children in the household
 pcvpa.mod$nochild5 <- if_else(pcvpa.mod$nochild5 == 0, 0L, 

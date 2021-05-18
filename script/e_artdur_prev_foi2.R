@@ -42,10 +42,13 @@ shorter %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos 
 shorter %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(foi = mean(foi)) %>%
 ungroup()) %>% select(foi)
 
+<<<<<<< HEAD
 #fit model to obtain predictions of FOI
 model_shorter = scam(nvtcarr ~ s(agegp, bs="mpd") + s(surv, bs="mpd"), family = binomial(link = "cloglog"), data = shorter)
 shorter$foi <- -derivative.scam(model_shorter, deriv = 1)$d * model_shorter$fitted.values
 
+=======
+>>>>>>> 49db09e53da88b728e7b7c47d9e1cc34a2be4b54
 #join observed and predicted datasets for survey number
 shorter4 <- left_join(left_join(shorter %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
 shorter %>% filter(nvtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
