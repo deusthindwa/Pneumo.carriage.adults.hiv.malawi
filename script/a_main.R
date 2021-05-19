@@ -12,7 +12,7 @@ if (!require(pacman)){
 pacman::p_load(char = c("tidyverse", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
                         "MuMIn","PropCIs", "forecast", "asbio", "scam", "here"))
 
-Yesoptions(stringsAsFactors = FALSE)
+#Yesoptions(stringsAsFactors = FALSE)
 setwd(here::here())
 
 #load phirst datasets (household-level, individual-level, follow-up & antibiotic use)
@@ -122,6 +122,8 @@ pcvpa.mod$cd4cnt <- if_else(pcvpa.mod$cd4cnt < 250, 0L,
                             if_else(pcvpa.mod$cd4cnt >=250 & pcvpa.mod$cd4cnt < 3000, 1L, NA_integer_))
 
 #adults living with children in the household
+pcvpa.mod$nochild5 <- if_else(is.na(pcvpa.mod$nochild5), 1L, pcvpa.mod$nochild5)
+
 pcvpa.mod$nochild5 <- if_else(pcvpa.mod$nochild5 == 0, 0L, 
                               if_else(pcvpa.mod$nochild5 >=1 & pcvpa.mod$nochild5 <5, 1L, NA_integer_))
 

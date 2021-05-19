@@ -13,7 +13,7 @@ options(warn = -1)
 crude = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex, nochild5) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_crude = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), na.action = na.exclude, data = crude)
+model_crude = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$fit = predict.gam(model_crude, type = "response", se.fit = TRUE)$fit
 crude$fit_lci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
 crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
@@ -33,7 +33,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv"), family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -83,10 +83,10 @@ B <- ggplot(data = cbind(crude2, crude4)) +
 #======================================================================================
 
 #subset for a correct dataset
-crude = pcvpa.mod %>% select(vtcarr, agegp, surv) %>% group_by(surv)
+crude = pcvpa.mod %>% select(vtcarr, agegp, surv, sex, nochild5) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_crude = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = crude)
+model_crude = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$fit = predict.gam(model_crude, type = "response", se.fit = TRUE)$fit
 crude$fit_lci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
 crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
@@ -106,7 +106,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx"), family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -156,10 +156,10 @@ D <- ggplot(data = cbind(crude2, crude4)) +
 #=======================================================================================
 
 #subset for a correct dataset
-crude = pcvpa.mod %>% select(nvtcarr1, agegp, surv) %>% group_by(surv)
+crude = pcvpa.mod %>% select(nvtcarr1, agegp, surv, sex, nochild5) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_crude = gam(nvtcarr1 ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = crude)
+model_crude = gam(nvtcarr1 ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$fit = predict.gam(model_crude, type = "response", se.fit = TRUE)$fit
 crude$fit_lci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
 crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
@@ -179,7 +179,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr1 ~ s(agegp, bs="mdcv") + s(surv, bs="mdcx"), family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(nvtcarr1 ~ s(agegp, bs="mdcv") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -229,10 +229,10 @@ F <- ggplot(data = cbind(crude2, crude4)) +
 #======================================================================================
 
 #subset for a correct dataset
-crude = pcvpa.mod %>% select(vtcarr1, agegp, surv) %>% group_by(surv)
+crude = pcvpa.mod %>% select(vtcarr1, agegp, surv, sex, nochild5) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_crude = gam(vtcarr1 ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = crude)
+model_crude = gam(vtcarr1 ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$fit = predict.gam(model_crude, type = "response", se.fit = TRUE)$fit
 crude$fit_lci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
 crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
@@ -252,7 +252,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(vtcarr1 ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx"), family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(vtcarr1 ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
