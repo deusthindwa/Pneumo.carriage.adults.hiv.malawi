@@ -33,7 +33,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(nvtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -106,7 +106,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(vtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -179,7 +179,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr1 ~ s(agegp, bs="mdcv") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(nvtcarr1 ~ s(agegp, bs="mdcv") + s(surv, bs="mpd") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp

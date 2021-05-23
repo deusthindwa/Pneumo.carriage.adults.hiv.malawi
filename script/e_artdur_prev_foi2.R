@@ -10,10 +10,10 @@ options(warn = -1)
 #======================================================================================
 
 #subset for a correct dataset
-shorter = pcvpa.mod %>% select(nvtcarr, agegp, surv, artdur) %>% filter(artdur == 0) %>% group_by(surv)
+shorter = pcvpa.mod %>% select(nvtcarr, agegp, surv, artdur, sex, nochild5) %>% filter(artdur == 0) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_shorter = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = shorter)
+model_shorter = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = shorter)
 shorter$fit = predict.gam(model_shorter, type = "response", se.fit = TRUE)$fit
 shorter$fit_lci = model_shorter$family$linkinv(predict.gam(model_shorter, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_shorter, type = "link", se.fit = TRUE)$se.fit))
 shorter$fit_uci = model_shorter$family$linkinv(predict.gam(model_shorter, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_shorter, type = "link", se.fit = TRUE)$se.fit))
@@ -33,7 +33,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_shorter = scam(nvtcarr ~ s(agegp, bs="mpi") + s(surv, bs="mpi"), family = binomial(link = "cloglog"), data = shorter)
+model_shorter = scam(nvtcarr ~ s(agegp, bs="mpi") + s(surv, bs="mpi") + sex + nochild5, family = binomial(link = "cloglog"), data = shorter)
 shorter$foi <- ((-derivative.scam(model_shorter, smooth.number = 1, deriv = 1)$d * model_shorter$fitted.values) + (1/42*model_shorter$fitted.values))/(1-model_shorter$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -42,13 +42,6 @@ shorter %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos 
 shorter %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(foi = mean(foi)) %>%
 ungroup()) %>% select(foi)
 
-<<<<<<< HEAD
-#fit model to obtain predictions of FOI
-model_shorter = scam(nvtcarr ~ s(agegp, bs="mpd") + s(surv, bs="mpd"), family = binomial(link = "cloglog"), data = shorter)
-shorter$foi <- -derivative.scam(model_shorter, deriv = 1)$d * model_shorter$fitted.values
-
-=======
->>>>>>> 49db09e53da88b728e7b7c47d9e1cc34a2be4b54
 #join observed and predicted datasets for survey number
 shorter4 <- left_join(left_join(shorter %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
 shorter %>% filter(nvtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
@@ -66,7 +59,7 @@ A <- ggplot(data = cbind(shorter1, shorter3)) +
   geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "red") +
   scale_y_continuous("NVT prevalence", sec.axis = sec_axis(~. * 0.15, name = ""), limits = c(0, 0.75)) + 
-  labs(title = "ART <5y", x = "Age,y") + 
+  labs(title = "ART ≤3y", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -90,10 +83,10 @@ B <- ggplot(data = cbind(shorter2, shorter4)) +
 #=======================================================================================
 
 #subset for a correct dataset
-longer = pcvpa.mod %>% select(nvtcarr, agegp, surv, artdur) %>% filter(artdur == 1) %>% group_by(surv)
+longer = pcvpa.mod %>% select(nvtcarr, agegp, surv, artdur, sex, nochild5) %>% filter(artdur == 1) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_longer = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = longer)
+model_longer = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = longer)
 longer$fit = predict.gam(model_longer, type = "response", se.fit = TRUE)$fit
 longer$fit_lci = model_longer$family$linkinv(predict.gam(model_longer, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_longer, type = "link", se.fit = TRUE)$se.fit))
 longer$fit_uci = model_longer$family$linkinv(predict.gam(model_longer, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_longer, type = "link", se.fit = TRUE)$se.fit))
@@ -113,7 +106,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_longer = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv"), family = binomial(link = "cloglog"), data = longer)
+model_longer = scam(nvtcarr ~ s(agegp, bs="mi") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = longer)
 longer$foi <- ((-derivative.scam(model_longer, smooth.number = 1, deriv = 1)$d * model_longer$fitted.values) + (1/42*model_longer$fitted.values))/(1-model_longer$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -136,10 +129,10 @@ C <- ggplot(data = cbind(longer1, longer3)) +
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
   geom_line(aes(x = agegp, y = fit), size = 1, color = "darkgreen") +
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
-  geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "darkgreen") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.15, name = ""), limits = c(0, 0.75)) + 
-  labs(title = "ART 5+y", x = "Age,y") + 
+  geom_point(aes(x = agegp, y = foi/0.20), size = 1, shape = 18, color = "darkgreen") +
+  geom_line(aes(x = agegp, y = foi/0.20), lty = "dashed", size = 0.7, color = "darkgreen") +
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.20, name = ""), limits = c(0, 0.75)) + 
+  labs(title = "ART >3y", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -163,10 +156,10 @@ D <- ggplot(data = cbind(longer2, longer4)) +
 #=======================================================================================
 
 #subset for a correct dataset
-shorter = pcvpa.mod %>% select(vtcarr, agegp, surv, artdur) %>% filter(artdur == 0) %>% group_by(surv)
+shorter = pcvpa.mod %>% select(vtcarr, agegp, surv, artdur, sex, nochild5) %>% filter(artdur == 0) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_shorter = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = shorter)
+model_shorter = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = shorter)
 shorter$fit = predict.gam(model_shorter, type = "response", se.fit = TRUE)$fit
 shorter$fit_lci = model_shorter$family$linkinv(predict.gam(model_shorter, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_shorter, type = "link", se.fit = TRUE)$se.fit))
 shorter$fit_uci = model_shorter$family$linkinv(predict.gam(model_shorter, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_shorter, type = "link", se.fit = TRUE)$se.fit))
@@ -186,7 +179,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_shorter = scam(vtcarr ~ s(agegp, bs="mpd") + s(surv, bs="mpd"), family = binomial(link = "cloglog"), data = shorter)
+model_shorter = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = shorter)
 shorter$foi <- ((-derivative.scam(model_shorter, smooth.number = 1, deriv = 1)$d * model_shorter$fitted.values) + (1/42*model_shorter$fitted.values))/(1-model_shorter$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -212,7 +205,7 @@ E <- ggplot(data = cbind(shorter1, shorter3)) +
   geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "red") +
   scale_y_continuous("VT prevalence", sec.axis = sec_axis(~. * 0.15, name = ""), limits = c(0, 0.75)) + 
-  labs(title = "ART <5y", x = "Age,y") + 
+  labs(title = "ART ≤3y", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -236,10 +229,10 @@ F <- ggplot(data = cbind(shorter2, shorter4)) +
 #=======================================================================================
 
 #subset for a correct dataset
-longer = pcvpa.mod %>% select(vtcarr, agegp, surv, artdur) %>% filter(artdur == 1) %>% group_by(surv)
+longer = pcvpa.mod %>% select(vtcarr, agegp, surv, artdur, sex, nochild5) %>% filter(artdur == 1) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_longer = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = longer)
+model_longer = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = longer)
 longer$fit = predict.gam(model_longer, type = "response", se.fit = TRUE)$fit
 longer$fit_lci = model_longer$family$linkinv(predict.gam(model_longer, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_longer, type = "link", se.fit = TRUE)$se.fit))
 longer$fit_uci = model_longer$family$linkinv(predict.gam(model_longer, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_longer, type = "link", se.fit = TRUE)$se.fit))
@@ -259,7 +252,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_longer = scam(vtcarr ~ s(agegp, bs="mpd") + s(surv, bs="mpd"), family = binomial(link = "cloglog"), data = longer)
+model_longer = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = longer)
 longer$foi <- ((-derivative.scam(model_longer, smooth.number = 1, deriv = 1)$d * model_longer$fitted.values) + (1/42*model_longer$fitted.values))/(1-model_longer$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -285,7 +278,7 @@ G <- ggplot(data = cbind(longer1, longer3)) +
   geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "darkgreen") +
   geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "darkgreen") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.15, name = ""), limits = c(0, 0.75)) + 
-  labs(title = "ART 7+y", x = "Age,y") + 
+  labs(title = "ART >3y", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +

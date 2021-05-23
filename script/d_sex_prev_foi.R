@@ -10,10 +10,10 @@ options(warn = -1)
 #======================================================================================
 
 #subset for a correct dataset
-females = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex) %>% filter(sex == 0) %>% group_by(surv)
+females = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex, nochild5) %>% filter(sex == 0) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_females = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = females)
+model_females = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + nochild5, family = binomial(link = "cloglog"), data = females)
 females$fit = predict.gam(model_females, type = "response", se.fit = TRUE)$fit
 females$fit_lci = model_females$family$linkinv(predict.gam(model_females, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_females, type = "link", se.fit = TRUE)$se.fit))
 females$fit_uci = model_females$family$linkinv(predict.gam(model_females, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_females, type = "link", se.fit = TRUE)$se.fit))
@@ -33,7 +33,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_females = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv"), family = binomial(link = "cloglog"), data = females)
+model_females = scam(nvtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + nochild5, family = binomial(link = "cloglog"), data = females)
 females$foi <- ((-derivative.scam(model_females, smooth.number = 1, deriv = 1)$d * model_females$fitted.values) + (1/42*model_females$fitted.values))/(1-model_females$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -58,7 +58,7 @@ A <- ggplot(data = cbind(females1, females3)) +
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("NVT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("NVT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.7)) + 
   labs(title = "Female", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -71,7 +71,7 @@ B <- ggplot(data = cbind(females2, females4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "red") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.7)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
@@ -83,10 +83,10 @@ B <- ggplot(data = cbind(females2, females4)) +
 #======================================================================================
 
 #subset for a correct dataset
-males = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex) %>% filter(sex == 1) %>% group_by(surv)
+males = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex, nochild5) %>% filter(sex == 1) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_males = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = males)
+model_males = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + nochild5, family = binomial(link = "cloglog"), data = males)
 males$fit = predict.gam(model_males, type = "response", se.fit = TRUE)$fit
 males$fit_lci = model_males$family$linkinv(predict.gam(model_males, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_males, type = "link", se.fit = TRUE)$se.fit))
 males$fit_uci = model_males$family$linkinv(predict.gam(model_males, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_males, type = "link", se.fit = TRUE)$se.fit))
@@ -106,7 +106,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_males = scam(nvtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx"), family = binomial(link = "cloglog"), data = males)
+model_males = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcx") + nochild5, family = binomial(link = "cloglog"), data = males)
 males$foi <- ((-derivative.scam(model_males, smooth.number = 1, deriv = 1)$d * model_males$fitted.values) + (1/42*model_males$fitted.values))/(1-model_males$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -131,7 +131,7 @@ C <- ggplot(data = cbind(males1, males3)) +
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.7)) + 
   labs(title = "Male", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -144,7 +144,7 @@ D <- ggplot(data = cbind(males2, males4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "NVT force of infection"), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "NVT force of infection"), limits = c(0, 0.7)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
@@ -156,10 +156,10 @@ D <- ggplot(data = cbind(males2, males4)) +
 #======================================================================================
 
 #subset for a correct dataset
-females = pcvpa.mod %>% select(vtcarr, agegp, surv, sex) %>% filter(sex == 0) %>% group_by(surv)
+females = pcvpa.mod %>% select(vtcarr, agegp, surv, sex, nochild5) %>% filter(sex == 0) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_females = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = females)
+model_females = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + nochild5, family = binomial(link = "cloglog"), data = females)
 females$fit = predict.gam(model_females, type = "response", se.fit = TRUE)$fit
 females$fit_lci = model_females$family$linkinv(predict.gam(model_females, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_females, type = "link", se.fit = TRUE)$se.fit))
 females$fit_uci = model_females$family$linkinv(predict.gam(model_females, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_females, type = "link", se.fit = TRUE)$se.fit))
@@ -179,7 +179,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_females = scam(vtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv"), family = binomial(link = "cloglog"), data = females)
+model_females = scam(vtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + nochild5, family = binomial(link = "cloglog"), data = females)
 females$foi <- ((-derivative.scam(model_females, smooth.number = 1, deriv = 1)$d * model_females$fitted.values) + (1/42*model_females$fitted.values))/(1-model_females$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -204,7 +204,7 @@ E <- ggplot(data = cbind(females1, females3)) +
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("VT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("VT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.7)) + 
   labs(title = "Female", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -217,7 +217,7 @@ F <- ggplot(data = cbind(females2, females4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "red") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.7)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
@@ -229,10 +229,10 @@ F <- ggplot(data = cbind(females2, females4)) +
 #======================================================================================
 
 #subset for a correct dataset
-males = pcvpa.mod %>% select(vtcarr, agegp, surv, sex) %>% filter(sex == 1) %>% group_by(surv)
+males = pcvpa.mod %>% select(vtcarr, agegp, surv, sex, nochild5) %>% filter(sex == 1) %>% group_by(surv)
 
 #fit model & obtain predictions and 95%CI
-model_males = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps"), family = binomial(link = "cloglog"), data = males)
+model_males = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + nochild5, family = binomial(link = "cloglog"), data = males)
 males$fit = predict.gam(model_males, type = "response", se.fit = TRUE)$fit
 males$fit_lci = model_males$family$linkinv(predict.gam(model_males, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_males, type = "link", se.fit = TRUE)$se.fit))
 males$fit_uci = model_males$family$linkinv(predict.gam(model_males, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_males, type = "link", se.fit = TRUE)$se.fit))
@@ -252,7 +252,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_males = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx"), family = binomial(link = "cloglog"), data = males)
+model_males = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + nochild5, family = binomial(link = "cloglog"), data = males)
 males$foi <- ((-derivative.scam(model_males, smooth.number = 1, deriv = 1)$d * model_males$fitted.values) + (1/42*model_males$fitted.values))/(1-model_males$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -277,7 +277,7 @@ G <- ggplot(data = cbind(males1, males3)) +
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.7)) + 
   labs(title = "Male", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -290,7 +290,7 @@ H <- ggplot(data = cbind(males2, males4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "VT force of infection"), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "VT force of infection"), limits = c(0, 0.7)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
