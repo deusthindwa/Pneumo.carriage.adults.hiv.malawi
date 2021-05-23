@@ -94,13 +94,13 @@ males$fit_uci = model_males$family$linkinv(predict.gam(model_males, type = "link
 #join observed and predicted datasets for agegp
 males1 <- left_join(left_join(males %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 males %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-males %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
+males %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Male") %>%
 ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:8], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[9:16])
 
 #join observed and predicted datasets for survey number
 males2 <- left_join(left_join(males %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
 males %>% filter(nvtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-males %>% filter(nvtcarr != 0) %>% group_by(surv) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
+males %>% filter(nvtcarr != 0) %>% group_by(surv) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Male") %>%
 ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:8], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[9:16])
 
 #----------------------------------------------------------------------------------
@@ -240,13 +240,13 @@ males$fit_uci = model_males$family$linkinv(predict.gam(model_males, type = "link
 #join observed and predicted datasets for agegp
 males1 <- left_join(left_join(males %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 males %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-males %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
+males %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Male") %>%
 ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:8], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[9:16])
 
 #join observed and predicted datasets for survey number
 males2 <- left_join(left_join(males %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
 males %>% filter(vtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-males %>% filter(vtcarr != 0) %>% group_by(surv) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
+males %>% filter(vtcarr != 0) %>% group_by(surv) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Male") %>%
 ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:8], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[9:16])
 
 #----------------------------------------------------------------------------------

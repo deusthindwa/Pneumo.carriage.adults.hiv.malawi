@@ -33,7 +33,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -58,7 +58,7 @@ A <- ggplot(data = cbind(crude1, crude3)) +
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("NVT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("Prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
   labs(title = "NVT(-ST3), Overall", x = "Age,y") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -71,7 +71,7 @@ B <- ggplot(data = cbind(crude2, crude4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "red") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "NVT force of infection"), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
@@ -130,7 +130,7 @@ C <- ggplot(data = cbind(crude1, crude3)) +
   geom_line(aes(x = agegp, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("VT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "VT(+ST3), Overall", x = "Age,y") +
   theme_bw() +
@@ -144,7 +144,7 @@ D <- ggplot(data = cbind(crude2, crude4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "VT force of infection"), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "Force of infection"), limits = c(0, 0.6)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
@@ -204,7 +204,7 @@ E <- ggplot(data = cbind(crude1, crude3)) +
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("NVT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("Prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
   labs(title = "NVT(+ST3), Overall", x = "Age,y") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -217,7 +217,7 @@ F <- ggplot(data = cbind(crude2, crude4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "red") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "NVT force of infection"), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "red", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
@@ -276,7 +276,7 @@ G <- ggplot(data = cbind(crude1, crude3)) +
   geom_line(aes(x = agegp, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("VT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.6)) + 
   geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "VT(-ST3), Overall", x = "Age,y") +
   theme_bw() +
@@ -290,7 +290,7 @@ H <- ggplot(data = cbind(crude2, crude4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "VT force of infection"), limits = c(0, 0.6)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "Force of infection"), limits = c(0, 0.6)) + 
   geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +

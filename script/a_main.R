@@ -10,7 +10,7 @@ if (!require(pacman)){
   install.packages("pacman")
 }
 pacman::p_load(char = c("tidyverse", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
-                        "MuMIn","PropCIs", "forecast", "asbio", "scam", "here"))
+                        "MuMIn","PropCIs", "forecast", "scam", "here"))
 
 #Yesoptions(stringsAsFactors = FALSE)
 setwd(here::here())
