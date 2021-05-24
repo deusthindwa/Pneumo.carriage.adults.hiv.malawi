@@ -148,14 +148,20 @@ source(here("script/d_sex_prev_foi.R"))
 #carriage prevalence & FOI by ART duration (figure 4)
 source(here("script/e_artdur_prev_foi.R"))
 
-#carriage prevalence & FOI by social economic status (figure 5)
-source(here("script/f_ses_prev_foi.R"))
-
 #carriage prevalence & FOI by CD4+ count (figure 6)
-source(here("script/g_cd4cnt_prev_foi.R"))
+source(here("script/f_cd4cnt_prev_foi.R"))
+
+#carriage prevalence & FOI by social economic status (figure 5)
+source(here("script/g_ses_prev_foi.R"))
 
 #sensitivity analysis of the spline types(figure 7)
-source(here("script/h_sensitivity_spline_prev.R"))
+source(here("script/h_sensitivity_carr_dur.R"))
+
+#sensitivity analysis of the spline types(figure 7)
+source(here("script/i_sensitivity_spline_prev.R"))
               
 #sensitivity analysis of the model residuals (figure 8)
-source(here("script/i_sensitivity_model_acf.R"))
+source(here("script/j_sensitivity_model_acf.R"))
+
+#sensitivity analysis of the model residuals (figure 8)
+source(here("script/k_multiplecarr_prev_foi.R"))
