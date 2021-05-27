@@ -14,9 +14,9 @@ crude = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex, nochild5) %>% group_by(s
 
 #fit model to obtain predictions of FOI
 model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
-crude$foi1 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (0*model_crude$fitted.values))/(1-model_crude$fitted.values)
-crude$foi2 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (1/11*model_crude$fitted.values))/(1-model_crude$fitted.values)
-crude$foi3 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
+crude$foi1 <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (0*model_crude$fitted.values))/(1-model_crude$fitted.values)
+crude$foi2 <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/11*model_crude$fitted.values))/(1-model_crude$fitted.values)
+crude$foi3 <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
 
 #join observed and predicted datasets for agegp
 crude1 <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
@@ -35,7 +35,7 @@ A <- ggplot(data = cbind(crude1, crude2)) +
   geom_line(aes(x = agegp, y = afoi1), lty = "dashed", size = 0.7, color = "darkgreen") +
   geom_line(aes(x = agegp, y = afoi2), lty = "dashed", size = 0.7, color = "darkblue") +
   geom_line(aes(x = agegp, y = afoi3), lty = "dashed", size = 0.7, color = "darkred") +
-  ylim(0, 0.08) +
+  ylim(0, 0.1) +
   labs(title = "NVT(-ST3), Overall", x = "Age,y", y = "Force of infection") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -47,7 +47,7 @@ B <- ggplot(data = cbind(crude1, crude2)) +
   geom_line(aes(x = surv, y = tfoi2), lty = "dashed", size = 0.7, color = "darkblue") +
   geom_line(aes(x = surv, y = tfoi3), lty = "dashed", size = 0.7, color = "darkred") +
   scale_x_continuous(breaks = seq(1, 8, 1)) +
-  ylim(0, 0.08) +
+  ylim(0, 0.1) +
   labs(title = "NVT(-ST3), Overall", x = "Survey number", y = "") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -82,7 +82,7 @@ C <- ggplot(data = cbind(crude1, crude2)) +
   geom_line(aes(x = agegp, y = afoi1), lty = "dashed", size = 0.7, color = "darkgreen") +
   geom_line(aes(x = agegp, y = afoi2), lty = "dashed", size = 0.7, color = "darkblue") +
   geom_line(aes(x = agegp, y = afoi3), lty = "dashed", size = 0.7, color = "darkred") +
-  ylim(0, 0.08) +
+  ylim(0, 0.1) +
   labs(title = "VT(+ST3), Overall", x = "Age,y", y = "") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -91,11 +91,11 @@ C <- ggplot(data = cbind(crude1, crude2)) +
 
 D <- ggplot(data = cbind(crude1, crude2)) +
   geom_line(aes(x = surv, y = tfoi1, color = "Immunising infection"), lty = "dashed", size = 0.7) +
-  geom_line(aes(x = surv, y = tfoi2, color = "11 days (Thindwa et al.)"), lty = "dashed", size = 0.7) +
-  geom_line(aes(x = surv, y = tfoi3, color = "42 days (Kalata et al.)"), lty = "dashed", size = 0.7) +
-  scale_colour_manual(name = "Carriage duration", values = c("Immunising infection" = "darkgreen", "11 days (Thindwa et al.)" = "darkblue", "42 days (Kalata et al.)"="darkred")) +
+  geom_line(aes(x = surv, y = tfoi2, color = "11 days"), lty = "dashed", size = 0.7) +
+  geom_line(aes(x = surv, y = tfoi3, color = "42 days"), lty = "dashed", size = 0.7) +
+  scale_colour_manual(name = "Carriage duration", values = c("Immunising infection" = "darkgreen", "11 days" = "darkblue", "42 days" = "darkred")) +
   scale_x_continuous(breaks = seq(1, 8, 1)) +
-  ylim(0, 0.08) +
+  ylim(0, 0.1) +
   labs(title = "VT(+ST3), Overall", x = "Survey number", y = "") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -107,6 +107,6 @@ D <- ggplot(data = cbind(crude1, crude2)) +
 #turn on warnings
 options(warn = defaultW)
 
-ggsave(here("output", "SFig1_sens_carr_dur.tiff"),
+ggsave(here("output", "SFig2_sens_carr_dur.tiff"),
        plot = (A | B | C | D),
        width = 13, height = 4, unit="in", dpi = 200)

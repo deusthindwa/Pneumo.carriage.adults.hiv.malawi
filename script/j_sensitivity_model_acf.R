@@ -186,7 +186,7 @@ V <- ggAcf(model_high_vt$residuals, type = "correlation", lag.max = 7, ylim = c(
 #turn on warnings
 options(warn = defaultW)
 
-ggsave(here("output", "SFig3_sens_model_acf.tiff"),
+ggsave(here("output", "SFig1_sens_model_acf.tiff"),
        plot = (A | B | C | D | E | F | G | H)/(I | J | K | L | M | N | O | P ) / (Q | R | S | T | U | V),
        width = 22, height = 10, unit="in", dpi = 200)
 

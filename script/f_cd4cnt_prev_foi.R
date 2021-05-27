@@ -60,7 +60,7 @@ A <- ggplot(data = cbind(lowcd4cnt1, lowcd4cnt3)) +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
   scale_y_continuous("NVT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "Low CD4+ count", x = "Age,y") + 
+  labs(title = "CD4+ count <250", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -134,7 +134,7 @@ C <- ggplot(data = cbind(highcd4cnt1, highcd4cnt3)) +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "High CD4+ count", x = "Age,y") + 
+  labs(title = "CD4+ count ≥250", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -208,7 +208,7 @@ E <- ggplot(data = cbind(lowcd4cnt1, lowcd4cnt3)) +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "red") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "red") +
   scale_y_continuous("VT prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "Low CD4+ count", x = "Age,y") + 
+  labs(title = "CD4+ count <250", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -282,7 +282,7 @@ G <- ggplot(data = cbind(highcd4cnt1, highcd4cnt3)) +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "High CD4+ count", x = "Age,y") + 
+  labs(title = "CD4+ count ≥250", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +

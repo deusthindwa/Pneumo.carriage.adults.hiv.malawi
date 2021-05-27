@@ -129,6 +129,6 @@ D <- crude %>% filter(vtcarr1 != 0) %>% group_by(surv, agegpn) %>% summarise(foi
 #turn on warnings
 options(warn = defaultW)
 
-ggsave(here("output", "SFig4_sens_age-time.tiff"),
+ggsave(here("output", "SFig3_sens_age-time.tiff"),
        plot = (A | B | C | D),
        width = 14, height = 3, unit="in", dpi = 200)

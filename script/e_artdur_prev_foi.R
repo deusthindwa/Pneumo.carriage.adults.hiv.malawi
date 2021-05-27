@@ -127,10 +127,10 @@ ungroup()) %>% select(foi)
 C <- ggplot(data = cbind(longer1, longer3)) +
   geom_point(aes(x = agegp, y = obs, size = Pos), shape = 1) +
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = agegp, y = fit), size = 1, color = "darkgreen") +
-  geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
-  geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "darkgreen") +
+  geom_line(aes(x = agegp, y = fit), size = 1, color = "blue") +
+  geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
+  geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "blue") +
+  geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.15, name = ""), limits = c(0, 0.75)) + 
   labs(title = "ART >3y", x = "Age,y") + 
   theme_bw() + 
@@ -141,11 +141,11 @@ C <- ggplot(data = cbind(longer1, longer3)) +
 D <- ggplot(data = cbind(longer2, longer4)) +
   geom_point(aes(x = surv, y = Pos/Tot, size = Pos), shape = 1) +
   geom_errorbar(aes(surv, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = surv, y = fit), size = 1, color = "darkgreen") +
-  geom_point(aes(x = surv, y = foi/0.15), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = surv, y = foi/0.15), lty = "dashed", size = 0.7, color = "darkgreen") +
+  geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
+  geom_point(aes(x = surv, y = foi/0.15), size = 1, shape = 18, color = "blue") +
+  geom_line(aes(x = surv, y = foi/0.15), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.15, name = "NVT force of infection"), limits = c(0, 0.75)) + 
-  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
+  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
   scale_x_continuous(breaks = seq(1, 8, 1)) +
@@ -273,10 +273,10 @@ ungroup()) %>% select(foi)
 G <- ggplot(data = cbind(longer1, longer3)) +
   geom_point(aes(x = agegp, y = obs, size = Pos), shape = 1) +
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = agegp, y = fit), size = 1, color = "darkgreen") +
-  geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
-  geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "darkgreen") +
+  geom_line(aes(x = agegp, y = fit), size = 1, color = "blue") +
+  geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
+  geom_point(aes(x = agegp, y = foi/0.15), size = 1, shape = 18, color = "blue") +
+  geom_line(aes(x = agegp, y = foi/0.15), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.15, name = ""), limits = c(0, 0.75)) + 
   labs(title = "ART >3y", x = "Age,y") + 
   theme_bw() + 
@@ -287,11 +287,11 @@ G <- ggplot(data = cbind(longer1, longer3)) +
 H <- ggplot(data = cbind(longer2, longer4)) +
   geom_point(aes(x = surv, y = Pos/Tot, size = Pos), shape = 1) +
   geom_errorbar(aes(surv, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = surv, y = fit), size = 1, color = "darkgreen") +
-  geom_point(aes(x = surv, y = foi/0.15), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = surv, y = foi/0.15), lty = "dashed", size = 0.7, color = "darkgreen") +
+  geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
+  geom_point(aes(x = surv, y = foi/0.15), size = 1, shape = 18, color = "blue") +
+  geom_line(aes(x = surv, y = foi/0.15), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.15, name = "VT force of infection"), limits = c(0, 0.75)) +
-  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
+  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
   scale_x_continuous(breaks = seq(1, 8, 1)) +
