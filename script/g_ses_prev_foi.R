@@ -106,7 +106,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #----------------------------------------------------------------------------------
 
 #fit model to obtain predictions of FOI
-model_midses = scam(nvtcarr ~ s(agegp, bs="mpd") + s(surv, bs="mpd") + sex + nochild5, family = binomial(link = "cloglog"), data = midses)
+model_midses = scam(nvtcarr ~ s(agegp, bs="mpi") + s(surv, bs="mpd") + sex + nochild5, family = binomial(link = "cloglog"), data = midses)
 midses$foi <- ((-derivative.scam(model_midses, smooth.number = 1, deriv = 1)$d * model_midses$fitted.values) + (1/42*model_midses$fitted.values))/(1-model_midses$fitted.values)
 
 #join observed and predicted datasets for agegp
@@ -132,7 +132,7 @@ C <- ggplot(data = cbind(midses1, midses3)) +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "Middle SES", x = "Age,y") + 
+  labs(title = "Middle/High SES", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -351,7 +351,7 @@ I <- ggplot(data = cbind(midses1, midses3)) +
   geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "Middle SES", x = "Age,y") + 
+  labs(title = "Middle/High SES", x = "Age,y") + 
   theme_bw() + 
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
@@ -450,6 +450,12 @@ L <- ggplot(data = cbind(highses2, highses4)) +
 #turn on warnings
 options(warn = defaultW)
 
+#with middle/high SES combine
+ggsave(here("output", "Fig6_ses_prev_foi.tiff"),
+       plot = (A | B | C | D) / (G | H | I | J),
+       width = 14, height = 6, unit="in", dpi = 200)
+
+#without middle/high SES combine
 ggsave(here("output", "Fig6_ses_prev_foi.tiff"),
        plot = (A | B | C | D | E | F) / (G | H | I | J | K | L),
        width = 16, height = 6, unit="in", dpi = 200)
