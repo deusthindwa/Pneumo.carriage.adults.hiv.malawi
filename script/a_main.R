@@ -18,7 +18,7 @@ setwd(here::here())
 #load phirst datasets (household-level, individual-level, follow-up & antibiotic use)
 #micro <- read.csv(here("data", "microarray.txt"), sep="\t", header=T)
 pcvpa <- read.dta13(here("data", "PCVPA.dta"))
-micro <- read.csv(here("data", "microarray.csv"))
+micro1 <- read.csv(here("data", "microarray.csv"))
 
 #select required variables
 pcvpa <- rename(select(pcvpa, pid, labid, collection_date, surv, serotype, risk_h, age_flr, sex, artdat_adj, artreg, ctx, cd4cnt, nochild5, ses_cat),
