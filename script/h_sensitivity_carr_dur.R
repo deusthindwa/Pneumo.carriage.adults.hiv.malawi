@@ -30,7 +30,7 @@ crude %>% filter(nvtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n
 crude %>% filter(nvtcarr != 0) %>% group_by(surv) %>% summarise(tfoi1 = mean(foi1), tfoi2 = mean(foi2), tfoi3 = mean(foi3)) %>%
 ungroup()) %>% select(surv, tfoi1, tfoi2, tfoi3)
 
-#plot prevalence curves
+#plot FOI curves
 A <- ggplot(data = cbind(crude1, crude2)) +
   geom_line(aes(x = agegp, y = afoi1), lty = "dashed", size = 0.7, color = "darkgreen") +
   geom_line(aes(x = agegp, y = afoi2), lty = "dashed", size = 0.7, color = "darkblue") +
@@ -60,7 +60,7 @@ B <- ggplot(data = cbind(crude1, crude2)) +
 crude = pcvpa.mod %>% select(vtcarr, agegp, surv, sex, nochild5) %>% group_by(surv)
 
 #fit model to obtain predictions of FOI
-model_crude = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude = scam(vtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
 crude$foi1 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (0*model_crude$fitted.values))/(1-model_crude$fitted.values)
 crude$foi2 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (1/11*model_crude$fitted.values))/(1-model_crude$fitted.values)
 crude$foi3 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
