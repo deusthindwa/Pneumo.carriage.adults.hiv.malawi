@@ -26,15 +26,17 @@ micro2 <- micro2 %>% mutate(mc = if_else(st1 == "VT" & st2 == "NVT", 1L,
 )
 
 #merge with the main dataset
-micro2 <- micro2 %>% select(labid, pid, mc)
-pcvpa.mod <- left_join(pcvpa.mod, micro2) %>% select(pid, labid, nvtcarr, vtcarr, nvtcarr1, vtcarr1, nvtcarr2, vtcarr2, mc, everything())
+micro2 <- micro2 %>% select(labid, pid, mc) %>% filter(mc == 1)
+pcvpa.mod <- left_join(pcvpa.mod, micro2)
 
-#recode the outcome in the main dataset baswed on multiple serotype
+ #recode the outcome in the main dataset baswed on multiple serotype
 pcvpa.mod$nvtcarr2 <- pcvpa.mod$nvtcarr
 pcvpa.mod$nvtcarr2[pcvpa.mod$mc == 1] <- 1
 
 pcvpa.mod$vtcarr2 <- pcvpa.mod$vtcarr
 pcvpa.mod$vtcarr2[pcvpa.mod$mc == 1] <- 1
+
+pcvpa.mod <- pcvpa.mod %>% select(pid, labid, nvtcarr, vtcarr, nvtcarr1, vtcarr1, nvtcarr2, vtcarr2, mc, everything())
 
 #=======================================================================================
 
@@ -57,14 +59,14 @@ crude$foi_vt2 <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitt
 
 #join observed and predicted datasets for agegp and survey
 crude1 <- crude %>% select(nvtcarr, agegp, foi_nvt) %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_nvt)) %>% mutate(Detection = "Latex")
-crude2 <- crude %>% select(nvtcarr2, agegp, foi_nvt2) %>% filter(nvtcarr2 == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_nvt2)) %>% mutate(Detection = "Latex + Microarray")
+crude2 <- crude %>% select(nvtcarr2, agegp, foi_nvt2) %>% filter(nvtcarr2 == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_nvt2)) %>% mutate(Detection = "Latex & Microarray")
 crude3 <- crude %>% select(vtcarr, agegp, foi_vt) %>% filter(vtcarr == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_vt)) %>% mutate(Detection = "Latex")
-crude4 <- crude %>% select(vtcarr2, agegp, foi_vt2) %>% filter(vtcarr2 == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_vt2)) %>% mutate(Detection = "Latex + Microarray")
+crude4 <- crude %>% select(vtcarr2, agegp, foi_vt2) %>% filter(vtcarr2 == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_vt2)) %>% mutate(Detection = "Latex & Microarray")
 
 crude5 <- crude %>% select(nvtcarr, surv, foi_nvt) %>% filter(nvtcarr == 1) %>% group_by(surv) %>% summarise(foi = mean(foi_nvt)) %>% mutate(Detection = "Latex")
-crude6 <- crude %>% select(nvtcarr2, surv, foi_nvt2) %>% filter(nvtcarr2 == 1) %>% group_by(surv) %>% summarise(foi = mean(foi_nvt2)) %>% mutate(Detection = "Latex + Microarray")
+crude6 <- crude %>% select(nvtcarr2, surv, foi_nvt2) %>% filter(nvtcarr2 == 1) %>% group_by(surv) %>% summarise(foi = mean(foi_nvt2)) %>% mutate(Detection = "Latex & Microarray")
 crude7 <- crude %>% select(vtcarr, surv, foi_vt) %>% filter(vtcarr == 1) %>% group_by(surv) %>% summarise(foi = mean(foi_vt)) %>% mutate(Detection = "Latex")
-crude8 <- crude %>% select(vtcarr2, surv, foi_vt2) %>% filter(vtcarr2 == 1) %>% group_by(surv) %>% summarise(foi = mean(foi_vt2)) %>% mutate(Detection = "Latex + Microarray")
+crude8 <- crude %>% select(vtcarr2, surv, foi_vt2) %>% filter(vtcarr2 == 1) %>% group_by(surv) %>% summarise(foi = mean(foi_vt2)) %>% mutate(Detection = "Latex & Microarray")
 
 #plot FOI curves
 
@@ -89,7 +91,7 @@ B <- ggplot(data = rbind(crude5, crude6)) +
 
 C <- ggplot(data = rbind(crude3, crude4)) +
   geom_line(aes(x = agegp, y = foi, color = Detection), lty = "dashed", size = 1) +
-  labs(title = "VT(+ST3), Overall", x = "Age,y", y = "Force of infection") +
+  labs(title = "VT(+ST3), Overall", x = "Age,y", y = "") +
   theme_bw() +
   ylim(0, 0.02) +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -104,11 +106,73 @@ D <- ggplot(data = rbind(crude7, crude8)) +
   ylim(0, 0.02) +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = c(0.6, 0.7))
+  theme(legend.position = c(0.7, 0.7))
+
+#=======================================================================================
+
+#fit model & obtain predictions of prevalence
+model_crude1 = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude2 = gam(nvtcarr2 ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude3 = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+model_crude4 = gam(vtcarr2 ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
+
+crude$fit_nvt = predict.gam(model_crude1, type = "response", se.fit = TRUE)$fit
+crude$fit_nvt2 = predict.gam(model_crude2, type = "response", se.fit = TRUE)$fit
+crude$fit_vt = predict.gam(model_crude3, type = "response", se.fit = TRUE)$fit
+crude$fit_vt2 = predict.gam(model_crude4, type = "response", se.fit = TRUE)$fit
+
+#join observed and predicted datasets for agegp and time
+crude1 <- crude %>% select(nvtcarr, agegp, fit_nvt) %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% summarise(fit = mean(fit_nvt)) %>% mutate(Detection = "Latex")
+crude2 <- crude %>% select(nvtcarr2, agegp, fit_nvt2) %>% filter(nvtcarr2 == 1) %>% group_by(agegp) %>% summarise(fit = mean(fit_nvt2)) %>% mutate(Detection = "Latex & Microarray")
+crude3 <- crude %>% select(vtcarr, agegp, fit_vt) %>% filter(vtcarr == 1) %>% group_by(agegp) %>% summarise(fit = mean(fit_vt)) %>% mutate(Detection = "Latex")
+crude4 <- crude %>% select(vtcarr2, agegp, fit_vt2) %>% filter(vtcarr2 == 1) %>% group_by(agegp) %>% summarise(fit = mean(fit_vt2)) %>% mutate(Detection = "Latex & Microarray")
+
+crude5 <- crude %>% select(nvtcarr, surv, fit_nvt) %>% filter(nvtcarr == 1) %>% group_by(surv) %>% summarise(fit = mean(fit_nvt)) %>% mutate(Detection = "Latex")
+crude6 <- crude %>% select(nvtcarr2, surv, fit_nvt2) %>% filter(nvtcarr2 == 1) %>% group_by(surv) %>% summarise(fit = mean(fit_nvt2)) %>% mutate(Detection = "Latex & Microarray")
+crude7 <- crude %>% select(vtcarr, surv, fit_vt) %>% filter(vtcarr == 1) %>% group_by(surv) %>% summarise(fit = mean(fit_vt)) %>% mutate(Detection = "Latex")
+crude8 <- crude %>% select(vtcarr2, surv, fit_vt2) %>% filter(vtcarr2 == 1) %>% group_by(surv) %>% summarise(fit = mean(fit_vt2)) %>% mutate(Detection = "Latex & Microarray")
+
+E <- ggplot(data = rbind(crude1, crude2)) +
+  geom_line(aes(x = agegp, y = fit, color = Detection), lty = "dashed", size = 1) +
+  labs(title = "NVT(-ST3), Overall", x = "Age,y", y = "Carriage prevalence") +
+  theme_bw() +
+  ylim(0, 0.4) +
+  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
+  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
+  theme(legend.position = "none")
+
+F <- ggplot(data = rbind(crude5, crude6)) +
+  geom_line(aes(x = surv, y = fit, color = Detection), lty = "dashed", size = 1) +
+  scale_x_continuous(breaks = seq(1, 8, 1)) +
+  labs(title = "", x = "Survey number", y = "") +
+  theme_bw() + 
+  ylim(0, 0.4) +
+  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
+  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
+  theme(legend.position = "none")
+
+G <- ggplot(data = rbind(crude3, crude4)) +
+  geom_line(aes(x = agegp, y = fit, color = Detection), lty = "dashed", size = 1) +
+  labs(title = "VT(+ST3), Overall", x = "Age,y", y = "") +
+  theme_bw() +
+  ylim(0, 0.4) +
+  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
+  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
+  theme(legend.position = "none")
+
+H <- ggplot(data = rbind(crude7, crude8)) +
+  geom_line(aes(x = surv, y = fit, color = Detection), lty = "dashed", size = 1) +
+  scale_x_continuous(breaks = seq(1, 8, 1)) +
+  labs(title = "", x = "Survey number", y = "") +
+  theme_bw() + 
+  ylim(0, 0.4) +
+  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
+  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
+  theme(legend.position = "none")
 
 #=======================================================================================
 
 ggsave(here("output", "SFig4_sens_mult_carr.tiff"),
-       plot = (A | B | C | D),
-       width = 14, height = 4, unit="in", dpi = 200)
+       plot = (E | F | G | H)/(A | B | C | D),
+       width = 14, height = 6, unit="in", dpi = 200)
 
