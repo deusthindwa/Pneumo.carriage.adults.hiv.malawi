@@ -144,81 +144,8 @@ D <- ggplot(data = cbind(midses2, midses4)) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
-  labs(title = "", x = "Survey number") +
-  theme_bw() +
-  scale_x_continuous(breaks = seq(1, 8, 1)) +
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = "none")
-
-#=======================================================================================
-
-#subset for a correct dataset
-highses = pcvpa.mod %>% select(nvtcarr, agegp, surv, sescat, sex, nochild5) %>% filter(sescat == 2) %>% group_by(surv)
-
-#fit model & obtain predictions and 95%CI
-model_highses = gam(nvtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = highses)
-highses$fit = predict.gam(model_highses, type = "response", se.fit = TRUE)$fit
-highses$fit_lci = model_highses$family$linkinv(predict.gam(model_highses, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_highses, type = "link", se.fit = TRUE)$se.fit))
-highses$fit_uci = model_highses$family$linkinv(predict.gam(model_highses, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_highses, type = "link", se.fit = TRUE)$se.fit))
-
-#join observed and predicted datasets for agegp
-highses1 <- left_join(left_join(highses %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:8], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[9:16])
-
-#join observed and predicted datasets for survey number
-highses2 <- left_join(left_join(highses %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(nvtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(nvtcarr != 0) %>% group_by(surv) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:7], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[8:14])
-
-#----------------------------------------------------------------------------------
-
-#fit model to obtain predictions of FOI
-model_highses = scam(nvtcarr ~ s(agegp, bs="mpd") + s(surv, bs="mpi") + sex + nochild5, family = binomial(link = "cloglog"), data = highses)
-highses$foi <- ((-derivative.scam(model_highses, smooth.number = 1, deriv = 1)$d * model_highses$fitted.values) + (1/42*model_highses$fitted.values))/(1-model_highses$fitted.values)
-
-#join observed and predicted datasets for agegp
-highses3 <- left_join(left_join(highses %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(foi = mean(foi)) %>%
-ungroup()) %>% select(foi)
-
-#join observed and predicted datasets for survey number
-highses4 <- left_join(left_join(highses %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(nvtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(nvtcarr != 0) %>% group_by(surv) %>% summarise(foi = mean(foi)) %>%
-ungroup()) %>% select(foi)
-
-#----------------------------------------------------------------------------------
-
-#plot prevalence curves
-E <- ggplot(data = cbind(highses1, highses3)) +
-  geom_point(aes(x = agegp, y = obs, size = Pos), shape = 1) +
-  geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = agegp, y = fit), size = 1, color = "darkgreen") +
-  geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
-  geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "darkgreen") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "High SES", x = "Age,y") + 
-  theme_bw() + 
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = "none")
-
-F <- ggplot(data = cbind(highses2, highses4)) +
-  geom_point(aes(x = surv, y = Pos/Tot, size = Pos), shape = 1) +
-  geom_errorbar(aes(surv, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = surv, y = fit), size = 1, color = "darkgreen") +
-  geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "darkgreen") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "NVT force of infection"), limits = c(0, 1)) + 
-  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
+  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
   scale_x_continuous(breaks = seq(1, 8, 1)) +
@@ -270,7 +197,7 @@ ungroup()) %>% select(foi)
 #----------------------------------------------------------------------------------
 
 #plot prevalence curves
-G <- ggplot(data = cbind(lowses1, lowses3)) +
+E <- ggplot(data = cbind(lowses1, lowses3)) +
   geom_point(aes(x = agegp, y = obs, size = Pos), shape = 1) +
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
   geom_line(aes(x = agegp, y = fit), size = 1, color = "red") +
@@ -284,7 +211,7 @@ G <- ggplot(data = cbind(lowses1, lowses3)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
   theme(legend.position = "none")
 
-H <- ggplot(data = cbind(lowses2, lowses4)) +
+F <- ggplot(data = cbind(lowses2, lowses4)) +
   geom_point(aes(x = surv, y = Pos/Tot, size = Pos), shape = 1) +
   geom_errorbar(aes(surv, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "red") +
@@ -343,7 +270,7 @@ ungroup()) %>% select(foi)
 #----------------------------------------------------------------------------------
 
 #plot prevalence curves
-I <- ggplot(data = cbind(midses1, midses3)) +
+G <- ggplot(data = cbind(midses1, midses3)) +
   geom_point(aes(x = agegp, y = obs, size = Pos), shape = 1) +
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
   geom_line(aes(x = agegp, y = fit), size = 1, color = "blue") +
@@ -357,87 +284,14 @@ I <- ggplot(data = cbind(midses1, midses3)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
   theme(legend.position = "none")
 
-J <- ggplot(data = cbind(midses2, midses4)) +
+H <- ggplot(data = cbind(midses2, midses4)) +
   geom_point(aes(x = surv, y = Pos/Tot, size = Pos), shape = 1) +
   geom_errorbar(aes(surv, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
   geom_line(aes(x = surv, y = fit), size = 1, color = "blue") +
   geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "blue") +
   geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "blue") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
-  labs(title = "", x = "Survey number") +
-  theme_bw() +
-  scale_x_continuous(breaks = seq(1, 8, 1)) +
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = "none")
-
-#=======================================================================================
-
-#subset for a correct dataset
-highses = pcvpa.mod %>% select(vtcarr, agegp, surv, sescat, sex, nochild5) %>% filter(sescat == 2) %>% group_by(surv)
-
-#fit model & obtain predictions and 95%CI
-model_highses = gam(vtcarr ~ te(agegp, bs="ps") + te(surv, bs="ps") + sex + nochild5, family = binomial(link = "cloglog"), data = highses)
-highses$fit = predict.gam(model_highses, type = "response", se.fit = TRUE)$fit
-highses$fit_lci = model_highses$family$linkinv(predict.gam(model_highses, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_highses, type = "link", se.fit = TRUE)$se.fit))
-highses$fit_uci = model_highses$family$linkinv(predict.gam(model_highses, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_highses, type = "link", se.fit = TRUE)$se.fit))
-
-#join observed and predicted datasets for agegp
-highses1 <- left_join(left_join(highses %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:8], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[9:16])
-
-#join observed and predicted datasets for survey number
-highses2 <- left_join(left_join(highses %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(vtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(vtcarr != 0) %>% group_by(surv) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>% mutate(sex="Female") %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:7], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[8:14])
-
-#----------------------------------------------------------------------------------
-
-#fit model to obtain predictions of FOI
-model_highses = scam(vtcarr ~ s(agegp, bs="mdcx") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = highses)
-highses$foi <- ((-derivative.scam(model_highses, smooth.number = 1, deriv = 1)$d * model_highses$fitted.values) + (1/42*model_highses$fitted.values))/(1-model_highses$fitted.values)
-
-#join observed and predicted datasets for agegp
-highses3 <- left_join(left_join(highses %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(foi = mean(foi)) %>%
-ungroup()) %>% select(foi)
-
-#join observed and predicted datasets for survey number
-highses4 <- left_join(left_join(highses %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
-highses %>% filter(vtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-highses %>% filter(vtcarr != 0) %>% group_by(surv) %>% summarise(foi = mean(foi)) %>%
-ungroup()) %>% select(foi)
-
-#----------------------------------------------------------------------------------
-
-#plot prevalence curves
-K <- ggplot(data = cbind(highses1, highses3)) +
-  geom_point(aes(x = agegp, y = obs, size = Pos), shape = 1) +
-  geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = agegp, y = fit), size = 1, color = "darkgreen") +
-  geom_ribbon(aes(x = agegp, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
-  geom_point(aes(x = agegp, y = foi/0.1), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = agegp, y = foi/0.1), lty = "dashed", size = 0.7, color = "darkgreen") +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 1)) + 
-  labs(title = "High SES", x = "Age,y") + 
-  theme_bw() + 
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = "none")
-
-L <- ggplot(data = cbind(highses2, highses4)) +
-  geom_point(aes(x = surv, y = Pos/Tot, size = Pos), shape = 1) +
-  geom_errorbar(aes(surv, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
-  geom_line(aes(x = surv, y = fit), size = 1, color = "darkgreen") +
-  geom_point(aes(x = surv, y = foi/0.1), size = 1, shape = 18, color = "darkgreen") +
-  geom_line(aes(x = surv, y = foi/0.1), lty = "dashed", size = 0.7, color = "darkgreen") +
   scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "VT force of infection"), limits = c(0, 1)) + 
-  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "green", color = "gray") +
+  geom_ribbon(aes(x = surv, y = fit, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = "blue", color = "gray") +
   labs(title = "", x = "Survey number") +
   theme_bw() +
   scale_x_continuous(breaks = seq(1, 8, 1)) +
@@ -452,10 +306,5 @@ options(warn = defaultW)
 
 #with middle/high SES combine
 ggsave(here("output", "Fig6_ses_prev_foi.tiff"),
-       plot = (A | B | C | D) / (G | H | I | J),
+       plot = (A | B | C | D) / (E | F | G | H),
        width = 14, height = 6, unit="in", dpi = 200)
-
-#without middle/high SES combine
-ggsave(here("output", "Fig6_ses_prev_foi.tiff"),
-       plot = (A | B | C | D | E | F) / (G | H | I | J | K | L),
-       width = 16, height = 6, unit="in", dpi = 200)
