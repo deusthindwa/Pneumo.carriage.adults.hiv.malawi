@@ -10,13 +10,13 @@ options(warn = -1)
 #======================================================================================
 
 #subset for a correct dataset
-crude = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex, nochild5) %>% group_by(surv)
+crude = pcvpa.mod %>% select(nvtcarr, age, year, seas, sex, nochild5)
 
 #fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
-crude$foi1 <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (0*model_crude$fitted.values))/(1-model_crude$fitted.values)
-crude$foi2 <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/11*model_crude$fitted.values))/(1-model_crude$fitted.values)
-crude$foi3 <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
+model_crude = scam(nvtcarr ~ s(age, bs="ps") + s(year, bs="ps") + sex + nochild5 + seas, family = binomial(link = "cloglog"), data = crude)
+crude$foi1 <- model_crude$fitted.values/365
+crude$foi2 <- model_crude$fitted.values/11 
+crude$foi3 <- model_crude$fitted.values/42 
 
 #join observed and predicted datasets for agegp
 crude1 <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 

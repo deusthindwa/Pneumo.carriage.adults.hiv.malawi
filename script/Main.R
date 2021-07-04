@@ -9,14 +9,13 @@
 if (!require(pacman)){
   install.packages("pacman")
 }
-pacman::p_load(char = c("tidyverse", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
+pacman::p_load(char = c("tidyverse", "lubridate", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
                         "MuMIn","PropCIs", "forecast", "scam", "broman", "here"))
 
 #Yesoptions(stringsAsFactors = FALSE)
 setwd(here::here())
 
 #load phirst datasets (household-level, individual-level, follow-up & antibiotic use)
-#micro <- read.csv(here("data", "microarray.txt"), sep="\t", header=T)
 pcvpa <- read.dta13(here("data", "PCVPA.dta"))
 micro1 <- read.csv(here("data", "microarray.csv"))
 
@@ -24,7 +23,7 @@ micro1 <- read.csv(here("data", "microarray.csv"))
 pcvpa <- rename(select(pcvpa, pid, labid, collection_date, surv, serotype, risk_h, age_flr, sex, artdat_adj, artreg, ctx, cd4cnt, nochild5, ses_cat),
                 date = collection_date, age = age_flr, artdate = artdat_adj, sescat = ses_cat)
 
-micro <- rename(select(micro1, SampleID.1, ArraySero), labid = SampleID.1, arraysero = ArraySero)
+#micro <- rename(select(micro1, SampleID.1, ArraySero), labid = SampleID.1, arraysero = ArraySero)
 
 #=======================================================================
 
@@ -94,6 +93,10 @@ pcvpa.mod$vtcarr1 <- if_else(pcvpa.mod$serotype != "NVT" & !is.na(pcvpa.mod$sero
 pcvpa.mod$nvtcarr1 <- if_else(pcvpa.mod$serotype == "NVT" | pcvpa.mod$serotype == "3", 1L, 0L)
 pcvpa.mod$nvtcarr1[is.na(pcvpa.mod$nvtcarr1)] <- 0
 
+#seasonal variable
+pcvpa.mod$seas <- month(ymd(pcvpa.mod$date))
+pcvpa.mod$year <- year(ymd(pcvpa.mod$date))
+
 #sex
 pcvpa.mod$sex <- if_else(pcvpa.mod$sex == "Female", 0L, 
                          if_else(pcvpa.mod$sex == "Male", 1L, NA_integer_))
@@ -125,7 +128,7 @@ pcvpa.mod$sescat <- if_else(pcvpa.mod$sescat == "Low", 0L,
                             if_else(pcvpa.mod$sescat == "Middle", 1L, 
                                     if_else(pcvpa.mod$sescat == "High", 1L, NA_integer_)))
  
-pcvpa.mod <- select(pcvpa.mod, pid, labid, nvtcarr, vtcarr, nvtcarr1, vtcarr1, surv, age, sex, artdur, artreg, ctx, cd4cnt, nochild5, sescat)
+pcvpa.mod <- select(pcvpa.mod, pid, labid, year, seas, nvtcarr, vtcarr, nvtcarr1, vtcarr1, surv, age, sex, artdur, artreg, ctx, cd4cnt, nochild5, sescat)
 
 #=======================================================================
 
