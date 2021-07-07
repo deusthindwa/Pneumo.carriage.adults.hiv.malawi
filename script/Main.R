@@ -10,7 +10,7 @@ if (!require(pacman)){
   install.packages("pacman")
 }
 pacman::p_load(char = c("tidyverse", "lubridate", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
-                        "MuMIn","PropCIs", "forecast", "Hmisc", "broman", "here"))
+                        "MuMIn","PropCIs", "forecast", "missForest", "broman", "here"))
 
 #Yesoptions(stringsAsFactors = FALSE)
 setwd(here::here())
@@ -118,7 +118,7 @@ pcvpa.mod$cd4cnt <- if_else(pcvpa.mod$cd4cnt < 250, 0L,
                             if_else(pcvpa.mod$cd4cnt >=250 & pcvpa.mod$cd4cnt < 3000, 1L, NA_integer_))
 
 #adults living with children in the household
-pcvpa.mod$nochild5 <- if_else(is.na(pcvpa.mod$nochild5), 1L, pcvpa.mod$nochild5)
+#pcvpa.mod$nochild5 <- if_else(is.na(pcvpa.mod$nochild5), 1L, pcvpa.mod$nochild5)
 
 pcvpa.mod$nochild5 <- if_else(pcvpa.mod$nochild5 == 0, 0L, 
                               if_else(pcvpa.mod$nochild5 >=1 & pcvpa.mod$nochild5 <5, 1L, NA_integer_))
@@ -129,6 +129,17 @@ pcvpa.mod$sescat <- if_else(pcvpa.mod$sescat == "Low", 0L,
                                     if_else(pcvpa.mod$sescat == "High", 1L, NA_integer_)))
  
 pcvpa.mod <- select(pcvpa.mod, pid, labid, year, seas, nvtcarr, vtcarr, nvtcarr1, vtcarr1, surv, age, sex, artdur, artreg, ctx, cd4cnt, nochild5, sescat)
+
+#multiple imputation
+set.seed(1988)
+pcvpa.mod1 <- pcvpa.mod %>% 
+  select(vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, cd4cnt, nochild5, sescat) %>% 
+  mutate(artdur = as_factor(artdur), cd4cnt = as_factor(cd4cnt), sescat = as_factor(sescat), nochild5 = as_factor(nochild5))
+
+pcvpa.mod2 <- missForest(pcvpa.mod1)
+pcvpa.mod <- pcvpa.mod2$ximp
+
+pcvpa.mod <- pcvpa.mod %>% mutate(artdur = as.integer(artdur), cd4cnt = as.integer(cd4cnt), sescat = as.integer(sescat), nochild5 = as.integer(nochild5))
 
 #=======================================================================
 

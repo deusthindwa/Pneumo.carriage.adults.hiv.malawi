@@ -10,10 +10,10 @@ options(warn = -1)
 #----------------------------------------------------------------------------------
 
 #subset for a dataset to store model estimates
-crude = pcvpa.mod %>% select(vtcarr, age, year, sex, nochild5, seas, artdur)
+crude = pcvpa.mod %>% select(vtcarr, age, year)
 
 #fit model to individual trajectories & obtain predictions and 95%CI
-model_crude = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + sex + nochild5 + seas + artdur, family = binomial(link = "cloglog"), data = pcvpa.mod, na.action = na.exclude)
+model_crude = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + sex + nochild5 + seas + sescat + artdur + cd4cnt, family = binomial(link = "cloglog"), data = pcvpa.mod)
 crude$fit = predict.gam(model_crude, type = "response", se.fit = TRUE)$fit
 crude$fit_lci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
 crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_crude, type = "link", se.fit = TRUE)$se.fit))
