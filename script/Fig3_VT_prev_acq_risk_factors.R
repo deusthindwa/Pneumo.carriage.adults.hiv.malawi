@@ -285,36 +285,39 @@ pcvpa_age <- rbind(male_age, female_age, lses_age, hses_age, sart_age, lart_age,
 pcvpa_year <- rbind(male_year, female_year, lses_year, hses_year, sart_year, lart_year, nochild5_year, yeschild5_year)
 
 #plot prevalence curves
-A <- ggplot(pcvpa_age) +
+A <- pcvpa_age %>% mutate(rff = factor(rf, levels=c('Male', 'Female', 'Low SES', 'Middle/High SES', 'ART <3y', 'ART ≥3y', 'Living with <5y child', 'Living without <5y child'))) %>%
+  ggplot() +
   geom_point(aes(x = agegp, y = obs, size = Pos), shape = 1) +
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
   geom_line(aes(x = agegp, y = fit, group = 1, color = rf), size = 0.7) +
   geom_ribbon(aes(x = agegp, y = fit, group = 1, ymin = fit_lci, ymax = fit_uci, fill = rf), alpha = 0.2) +
-  geom_line(aes(x = agegp, y = foi/0.1, group = 1), lty = "dashed", size = 0.6) +
+  geom_line(aes(x = agegp, y = foi/0.1, group = 1, color = rf), lty = "dashed", size = 0.6) +
   geom_ribbon(aes(x = agegp, y = foi/0.1, group = 1, ymin = foi_lci/0.1, ymax = foi_uci/0.1, fill = rf), alpha = 0.2) +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "Daily carriage acquisition"), limits = c(0, 0.45)) + 
+  scale_y_continuous("VT carriage prevalence", sec.axis = sec_axis(~. * 0.1, name = "Daily VT carriage acquisition"), limits = c(0, 0.45)) + 
   scale_x_discrete(expand = c(0.04,0.04)) +
-  labs(title = "", x = "Age group (years)") +
+  labs(x = "Age group (years)") +
   theme_bw() +
-  facet_grid(.~rf) +
-  theme(axis.text.x = element_text(size = 6), axis.text.y = element_text(size = 6)) +
-  theme(axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 10)) +
+  facet_grid(.~rff) +
+  theme(strip.text.x = element_text(size = 12)) +
+  theme(axis.text.x = element_text(size = 7, face = "bold"), axis.text.y = element_text(size = 7, face = "bold")) +
+  theme(axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8)) +
   theme(legend.position = "none")
 
-B <- ggplot(pcvpa_year) +
+B <- pcvpa_year %>% mutate(rff = factor(rf, levels=c('Male', 'Female', 'Low SES', 'Middle/High SES', 'ART <3y', 'ART ≥3y', 'Living with <5y child', 'Living without <5y child'))) %>%
+  ggplot() +
   geom_point(aes(x = year, y = obs, size = Pos), shape = 1) +
   geom_errorbar(aes(year, ymin = obs_lci, ymax = obs_uci), width = 0, size = 0.3) +
   geom_line(aes(x = year, y = fit, group = 1, color = rf), size = 0.7) +
   geom_ribbon(aes(x = year, y = fit, group = 1, ymin = fit_lci, ymax = fit_uci, fill = rf), alpha = 0.2) +
-  geom_line(aes(x = year, y = foi/0.1, group = 1), lty = "dashed", size = 0.6) +
+  geom_line(aes(x = year, y = foi/0.1, group = 1, color = rf), lty = "dashed", size = 0.6) +
   geom_ribbon(aes(x = year, y = foi/0.1, group = 1, ymin = foi_lci/0.1, ymax = foi_uci/0.1, fill = rf), alpha = 0.2) +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "Daily carriage acquisition"), limits = c(0, 0.45)) + 
-  scale_x_discrete(expand = c(0.04,0.04)) +
-  labs(title = "", x = "Survey year") +
+  scale_y_continuous("VT carriage prevalence", sec.axis = sec_axis(~. * 0.1, name = "Daily VT carriage acquisition"), limits = c(0, 0.40)) + 
+  labs(x = "Survey year") +
   theme_bw() +
-  facet_grid(.~rf) +
-  theme(axis.text.x = element_text(size = 6), axis.text.y = element_text(size = 6)) +
-  theme(axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 10)) +
+  facet_grid(.~rff) +
+  theme(strip.background = element_blank(), strip.text.x = element_blank()) +
+  theme(axis.text.x = element_text(size = 7, face = "bold"), axis.text.y = element_text(size = 7, face = "bold")) +
+  theme(axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8)) +
   theme(legend.position = "none")
 
 #======================================================================================
@@ -322,7 +325,7 @@ B <- ggplot(pcvpa_year) +
 #turn on warnings
 options(warn = defaultW)
 
-ggsave(here("output", "Fig4_VT_prev_acq_art_child5.tiff"),
-       plot = (A | B | C | D) / (E | F | G | H),
-       width = 13, height = 6, unit="in", dpi = 200)
+ggsave(here("output", "Fig3_VT_prev_acq_risk_factors.tiff"),
+       plot = (A / B ),
+       width = 18, height = 6, unit="in", dpi = 200)
 

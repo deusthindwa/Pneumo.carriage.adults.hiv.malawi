@@ -51,7 +51,7 @@ A <- ggplot(crude_age) +
   geom_ribbon(aes(x = agegp, y = fit, group = 1, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = brocolors("crayons")["Forest Green"]) +
   geom_line(aes(x = agegp, y = foi/0.1, group = 1), lty = "dashed", size = 0.6, color = brocolors("crayons")["Mahogany"]) +
   geom_ribbon(aes(x = agegp, y = foi/0.1, group = 1, ymin = foi_lci/0.1, ymax = foi_uci/0.1), alpha = 0.2, fill = brocolors("crayons")["Mahogany"]) +
-  scale_y_continuous("Carriage prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.45)) + 
+  scale_y_continuous("Carriage prevalence", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.40)) + 
   scale_x_discrete(expand = c(0.04,0.04)) +
   labs(title = "Vaccine Serotypes (VT)", x = "Age group (years)") +
   theme_bw() +
@@ -66,7 +66,7 @@ B <- ggplot(crude_year) +
   geom_ribbon(aes(x = year, y = fit, group = 1, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = brocolors("crayons")["Forest Green"]) +
   geom_line(aes(x = year, y = foi/0.1, group = 1), lty = "dashed", size = 0.6, color = brocolors("crayons")["Mahogany"]) +
   geom_ribbon(aes(x = year, y = foi/0.1, group = 1, ymin = foi_lci/0.1, ymax = foi_uci/0.1), alpha = 0.2, fill = brocolors("crayons")["Mahogany"]) +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.45)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.40)) + 
   labs(title = "", x = "Year") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
@@ -117,7 +117,7 @@ C <- ggplot(crude_age) +
   geom_ribbon(aes(x = agegp, y = fit, group = 1, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = brocolors("crayons")["Navy Blue"]) +
   geom_line(aes(x = agegp, y = foi/0.1, group = 1), lty = "dashed", size = 0.6, color = brocolors("crayons")["Yellow Orange"]) +
   geom_ribbon(aes(x = agegp, y = foi/0.1, group = 1, ymin = foi_lci/0.1, ymax = foi_uci/0.1), alpha = 0.2, fill = brocolors("crayons")["Yellow Orange"]) +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.45)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = ""), limits = c(0, 0.40)) + 
   scale_x_discrete(expand = c(0.04,0.04)) +
   labs(title = "VT without Serotype 3", x = "Age group (years)") +
   theme_bw() +
@@ -132,7 +132,7 @@ D <- ggplot(crude_year) +
   geom_ribbon(aes(x = year, y = fit, group = 1, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, fill = brocolors("crayons")["Navy Blue"]) +
   geom_line(aes(x = year, y = foi/0.1, group = 1), lty = "dashed", size = 0.6, color = brocolors("crayons")["Yellow Orange"]) +
   geom_ribbon(aes(x = year, y = foi/0.1, group = 1, ymin = foi_lci/0.1, ymax = foi_uci/0.1), alpha = 0.2, fill = brocolors("crayons")["Yellow Orange"]) +
-  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "Daily carriage acquisition"), limits = c(0, 0.45)) + 
+  scale_y_continuous("", sec.axis = sec_axis(~. * 0.1, name = "Daily carriage acquisition"), limits = c(0, 0.40)) + 
   labs(title = "", x = "Year") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
