@@ -23,8 +23,6 @@ micro1 <- read.csv(here("data", "microarray.csv"))
 pcvpa <- rename(select(pcvpa, pid, labid, collection_date, surv, serotype, risk_h, age_flr, sex, artdat_adj, artreg, ctx, cd4cnt, nochild5, ses_cat),
                 date = collection_date, age = age_flr, artdate = artdat_adj, sescat = ses_cat)
 
-#micro <- rename(select(micro1, SampleID.1, ArraySero), labid = SampleID.1, arraysero = ArraySero)
-
 #=======================================================================
 
 #cleaning/recoding variables for descriptive analysis
@@ -91,55 +89,57 @@ pcvpa.mod$nvtcarr <- if_else(pcvpa.mod$serogroup == "NVT", 1L,
 pcvpa.mod$vtcarr1 <- if_else(pcvpa.mod$serotype != "NVT" & !is.na(pcvpa.mod$serotype) & pcvpa.mod$serotype != 3, 1L, 0L)
 
 pcvpa.mod$nvtcarr1 <- if_else(pcvpa.mod$serotype == "NVT" | pcvpa.mod$serotype == "3", 1L, 0L)
-pcvpa.mod$nvtcarr1[is.na(pcvpa.mod$nvtcarr1)] <- 0
+pcvpa.mod$nvtcarr1[is.na(pcvpa.mod$nvtcarr1)] <- 0L
 
-#seasonal variable
-pcvpa.mod$seas <- month(ymd(pcvpa.mod$date))
-pcvpa.mod$year <- year(ymd(pcvpa.mod$date))
+#seasonal variables
+pcvpa.mod$seas <- as.integer(month(ymd(pcvpa.mod$date)))
+pcvpa.mod$year <- as.integer(year(ymd(pcvpa.mod$date)))
 
 #sex
-pcvpa.mod$sex <- if_else(pcvpa.mod$sex == "Female", 0L, 
-                         if_else(pcvpa.mod$sex == "Male", 1L, NA_integer_))
+pcvpa.mod$sex <- if_else(pcvpa.mod$sex == "Female", 1L, 
+                         if_else(pcvpa.mod$sex == "Male", 2L, NA_integer_))
 
 #ART duration
-pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <3, 0L, 
-                                    if_else(pcvpa.mod$artdur >=3 & pcvpa.mod$artdur <20, 1L, NA_integer_))
+pcvpa.mod$artdur <- if_else(pcvpa.mod$artdur <3, 1L, 
+                                    if_else(pcvpa.mod$artdur >=3 & pcvpa.mod$artdur <20, 2L, NA_integer_))
 
-#ART regimen
-pcvpa.mod$artreg <- if_else(pcvpa.mod$artreg == "First line", 0L,
-                            if_else(pcvpa.mod$artreg == "Second line", 1L, NA_integer_))
-
-#Cotrimoxozole
-pcvpa.mod$ctx <- if_else(pcvpa.mod$ctx == "No", 0L,
-                         if_else(pcvpa.mod$ctx =="Yes", 1L, NA_integer_))
-
-#cd4+ count
-pcvpa.mod$cd4cnt <- if_else(pcvpa.mod$cd4cnt < 250, 0L, 
-                            if_else(pcvpa.mod$cd4cnt >=250 & pcvpa.mod$cd4cnt < 3000, 1L, NA_integer_))
-
-#adults living with children in the household
-#pcvpa.mod$nochild5 <- if_else(is.na(pcvpa.mod$nochild5), 1L, pcvpa.mod$nochild5)
-
-pcvpa.mod$nochild5 <- if_else(pcvpa.mod$nochild5 == 0, 0L, 
-                              if_else(pcvpa.mod$nochild5 >=1 & pcvpa.mod$nochild5 <5, 1L, NA_integer_))
+pcvpa.mod$nochild5 <- if_else(pcvpa.mod$nochild5 == 0, 1L, 
+                              if_else(pcvpa.mod$nochild5 >=1 & pcvpa.mod$nochild5 <5, 2L, NA_integer_))
 
 #social economic status
-pcvpa.mod$sescat <- if_else(pcvpa.mod$sescat == "Low", 0L, 
-                            if_else(pcvpa.mod$sescat == "Middle", 1L, 
-                                    if_else(pcvpa.mod$sescat == "High", 1L, NA_integer_)))
- 
-pcvpa.mod <- select(pcvpa.mod, pid, labid, year, seas, nvtcarr, vtcarr, nvtcarr1, vtcarr1, surv, age, sex, artdur, artreg, ctx, cd4cnt, nochild5, sescat)
+pcvpa.mod$sescat <- if_else(pcvpa.mod$sescat == "Low", 1L, 
+                            if_else(pcvpa.mod$sescat == "Middle", 2L, 
+                                    if_else(pcvpa.mod$sescat == "High", 2L, NA_integer_)))
 
-#multiple imputation
+#final dataset
+pcvpa.mod <- select(pcvpa.mod, pid, labid, nvtcarr, vtcarr, nvtcarr1, vtcarr1, year, age, seas, sex, sescat, artdur, nochild5)
+
+#=======================================================================
+
+#multiple imputation on 
 set.seed(1988)
 pcvpa.mod1 <- pcvpa.mod %>% 
-  select(vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, cd4cnt, nochild5, sescat) %>% 
-  mutate(artdur = as_factor(artdur), cd4cnt = as_factor(cd4cnt), sescat = as_factor(sescat), nochild5 = as_factor(nochild5))
+  select(vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
+  mutate(artdur = as_factor(artdur),
+         nochild5 = as_factor(nochild5),
+         sescat = as_factor(sescat))
 
 pcvpa.mod2 <- missForest(pcvpa.mod1)
-pcvpa.mod <- pcvpa.mod2$ximp
+pcvpa.mod2 <- pcvpa.mod2$ximp
 
-pcvpa.mod <- pcvpa.mod %>% mutate(artdur = as.integer(artdur), cd4cnt = as.integer(cd4cnt), sescat = as.integer(sescat), nochild5 = as.integer(nochild5))
+pcvpa.mod <- pcvpa.mod2 %>% 
+  select(vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
+  mutate(vtcarr = as.integer(vtcarr),
+         vtcarr1 = as.integer(vtcarr1),
+         nvtcarr = as.integer(nvtcarr),
+         nvtcarr1 = as.integer(nvtcarr1),
+         year = as.integer(year),
+         age = as.integer(age),
+         seas = as.integer(seas),
+         sex = as.integer(sex),
+         artdur = as.integer(artdur),
+         nochild5 = as.integer(nochild5),
+         sescat = as.integer(sescat)) 
 
 #=======================================================================
 
