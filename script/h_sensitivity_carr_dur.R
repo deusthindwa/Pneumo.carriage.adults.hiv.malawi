@@ -10,97 +10,44 @@ options(warn = -1)
 #======================================================================================
 
 #subset for a correct dataset
-crude = pcvpa.mod %>% select(nvtcarr, age, year, seas, sex, nochild5)
+crude = pcvpa.mod %>% select(vtcarr, nvtcarr, age, year)
 
-#fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr ~ s(age, bs="ps") + s(year, bs="ps") + sex + nochild5 + seas, family = binomial(link = "cloglog"), data = crude)
-crude$foi1 <- model_crude$fitted.values/365
-crude$foi2 <- model_crude$fitted.values/11 
-crude$foi3 <- model_crude$fitted.values/42 
+#fit model to individual trajectories & obtain predictions and 95%CI
+model_vt = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + artdur + nochild5 + sescat, family = binomial(link = "cloglog"), data = pcvpa.mod)
+model_nvt = gam(nvtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + artdur + nochild5 + sescat, family = binomial(link = "cloglog"), data = pcvpa.mod)
+crude$prevt <- model_vt$fitted.values
+crude$prenvt <- model_nvt$fitted.values
+crude <- crude %>% mutate(acqvt1 = prevt/11, acqvt2 = prevt/42, acqvt3 = prevt/365.25, acqnvt1 = prenvt/11, acqnvt2 = prenvt/42, acqnvt3 = prenvt/365.25)
 
-#join observed and predicted datasets for agegp
-crude1 <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
-crude %>% filter(nvtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(afoi1 = mean(foi1), afoi2 = mean(foi2), afoi3 = mean(foi3)) %>%
-ungroup()) %>% select(agegp, afoi1, afoi2, afoi3)
+#join observed and predicted datasets for survey year
+crude1 <- crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(acqvt1 = mean(acqvt1), acqvt2 = mean(acqvt2), acqvt3 = mean(acqvt3), )
+crude2 <- crude %>% filter(nvtcarr != 0) %>% group_by(year) %>% summarise(acqnvt1 = mean(acqnvt1), acqnvt2 = mean(acqnvt2), acqnvt3 = mean(acqnvt3))
+crude3 <- crude %>% filter(vtcarr != 0) %>% group_by(year, agegp) %>% summarise(foi1 = mean(acqvt2))
+crude4 <- crude %>% filter(nvtcarr != 0) %>% group_by(year, agegp) %>% summarise(foi2 = mean(acqnvt2))
+crude5 <- crude %>% filter(vtcarr != 0) %>% group_by(agegp, year) %>% summarise(foi3 = mean(acqvt2))
+crude6 <- crude %>% filter(nvtcarr != 0) %>% group_by(agegp, year) %>% summarise(foi4 = mean(acqnvt2))
 
-#join observed and predicted datasets for survey number
-crude2 <- left_join(left_join(crude %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
-crude %>% filter(nvtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-crude %>% filter(nvtcarr != 0) %>% group_by(surv) %>% summarise(tfoi1 = mean(foi1), tfoi2 = mean(foi2), tfoi3 = mean(foi3)) %>%
-ungroup()) %>% select(surv, tfoi1, tfoi2, tfoi3)
-
-#plot FOI curves
-A <- ggplot(data = cbind(crude1, crude2)) +
-  geom_line(aes(x = agegp, y = afoi1), lty = "dashed", size = 0.7, color = "darkgreen") +
-  geom_line(aes(x = agegp, y = afoi2), lty = "dashed", size = 0.7, color = "darkblue") +
-  geom_line(aes(x = agegp, y = afoi3), lty = "dashed", size = 0.7, color = "darkred") +
-  ylim(0, 0.05) +
-  labs(title = "NVT(-ST3), Overall", x = "Age,y", y = "Force of infection") +
+A <- ggplot(data = crude1) +
+  geom_line(aes(x = year, y = acqvt1, color = "11 days"), lty = "dashed", size = 0.7) +
+  geom_line(aes(x = year, y = acqvt2, color = "42 days"), lty = "dashed", size = 0.7) +
+  scale_colour_manual(name = "Carriage duration", values = c("11d" = "darkblue", "42d" = "darkred")) +
+  ylim(0, 0.03) +
+  labs(title = "Overall VT carriage", x = "Survey year", y = "Daily carriage acquisition") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = "none")
+  theme(legend.position = c(0.7, 0.7))
 
-B <- ggplot(data = cbind(crude1, crude2)) +
-  geom_line(aes(x = surv, y = tfoi1), lty = "dashed", size = 0.7, color = "darkgreen") +
-  geom_line(aes(x = surv, y = tfoi2), lty = "dashed", size = 0.7, color = "darkblue") +
-  geom_line(aes(x = surv, y = tfoi3), lty = "dashed", size = 0.7, color = "darkred") +
-  scale_x_continuous(breaks = seq(1, 8, 1)) +
-  ylim(0, 0.05) +
-  labs(title = "NVT(-ST3), Overall", x = "Survey number", y = "") +
+B <- ggplot(data = crude2) +
+  geom_line(aes(x = year, y = acqnvt1, color = "11 days"), lty = "dashed", size = 0.7) +
+  geom_line(aes(x = year, y = acqnvt2, color = "42 days"), lty = "dashed", size = 0.7) +
+  scale_colour_manual(name = "Carriage duration", values = c("11d" = "darkblue", "42d" = "darkred")) +
+  ylim(0, 0.03) +
+  labs(title = "Overall NVT carriage", x = "Survey year", y = "") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = "none")
-
-#======================================================================================
-
-#subset for a correct dataset
-crude = pcvpa.mod %>% select(vtcarr, agegp, surv, sex, nochild5) %>% group_by(surv)
-
-#fit model to obtain predictions of FOI
-model_crude = scam(vtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcx") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
-crude$foi1 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (0*model_crude$fitted.values))/(1-model_crude$fitted.values)
-crude$foi2 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (1/11*model_crude$fitted.values))/(1-model_crude$fitted.values)
-crude$foi3 <- ((-derivative.scam(model_crude, smooth.number = 1, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
-
-#join observed and predicted datasets for agegp
-crude1 <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
-crude %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(afoi1 = mean(foi1), afoi2 = mean(foi2), afoi3 = mean(foi3)) %>%
-ungroup()) %>% select(agegp, afoi1, afoi2, afoi3)
-
-#join observed and predicted datasets for survey number
-crude2 <- left_join(left_join(crude %>% group_by(surv) %>% tally() %>% rename(Tot = n), 
-crude %>% filter(vtcarr == 1) %>% group_by(surv) %>% tally() %>% rename(Pos = n)), 
-crude %>% filter(vtcarr != 0) %>% group_by(surv) %>% summarise(tfoi1 = mean(foi1), tfoi2 = mean(foi2), tfoi3 = mean(foi3)) %>%
-ungroup()) %>% select(surv, tfoi1, tfoi2, tfoi3)
-
-#plot prevalence curves
-C <- ggplot(data = cbind(crude1, crude2)) +
-  geom_line(aes(x = agegp, y = afoi1), lty = "dashed", size = 0.7, color = "darkgreen") +
-  geom_line(aes(x = agegp, y = afoi2), lty = "dashed", size = 0.7, color = "darkblue") +
-  geom_line(aes(x = agegp, y = afoi3), lty = "dashed", size = 0.7, color = "darkred") +
-  ylim(0, 0.05) +
-  labs(title = "VT(+ST3), Overall", x = "Age,y", y = "") +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = "none")
-
-D <- ggplot(data = cbind(crude1, crude2)) +
-  geom_line(aes(x = surv, y = tfoi1, color = "Immunising infection"), lty = "dashed", size = 0.7) +
-  geom_line(aes(x = surv, y = tfoi2, color = "11 days"), lty = "dashed", size = 0.7) +
-  geom_line(aes(x = surv, y = tfoi3, color = "42 days"), lty = "dashed", size = 0.7) +
-  scale_colour_manual(name = "Carriage duration", values = c("Immunising infection" = "darkgreen", "11 days" = "darkblue", "42 days" = "darkred")) +
-  scale_x_continuous(breaks = seq(1, 8, 1)) +
-  ylim(0, 0.05) +
-  labs(title = "VT(+ST3), Overall", x = "Survey number", y = "") +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = c(0.6, 0.7))
+  theme(legend.position = c(0.7, 0.7))
 
 #======================================================================================
 

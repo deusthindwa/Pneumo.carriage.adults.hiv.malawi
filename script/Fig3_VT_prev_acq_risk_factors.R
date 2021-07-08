@@ -10,40 +10,6 @@ options(warn = -1)
 #======================================================================================
 
 #subset for a dataset to store model estimates
-male = filter(pcvpa.mod, sex == 2) %>% select(vtcarr, age, year)
-
-#fit model to individual trajectories & obtain predictions and 95%CI
-model_male = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + artdur + nochild5 + sescat, family = binomial(link = "cloglog"), data = filter(pcvpa.mod, sex == 2), na.action = na.exclude)
-male$fit = predict.gam(model_male, type = "response", se.fit = TRUE)$fit
-male$fit_lci = model_male$family$linkinv(predict.gam(model_male, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_male, type = "link", se.fit = TRUE)$se.fit))
-male$fit_uci = model_male$family$linkinv(predict.gam(model_male, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_male, type = "link", se.fit = TRUE)$se.fit))
-
-#----------------------------------------------------------------------------------
-
-#create age group
-male <- male %>% 
-  mutate(agegp = if_else(age <=24, "18-24",
-                         if_else(age >24 & age <=29, "25-29",
-                                 if_else(age >29 & age <=34, "30-34",
-                                         if_else(age >34 & age <=40, "35-40", NA_character_)))))
-
-#get age group mean predicted prevalence and acquisitions
-male_age <- left_join(left_join(male %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
-male %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
-male %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Male")
-
-#----------------------------------------------------------------------------------
-
-#join observed and predicted datasets for yearey number
-male_year <- left_join(left_join(male %>% group_by(year) %>% tally() %>% rename(Tot = n), 
-male %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
-male %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Male")
-
-#======================================================================================
-
-#subset for a dataset to store model estimates
 female = filter(pcvpa.mod, sex == 1) %>% select(vtcarr, age, year)
 
 #fit model to individual trajectories & obtain predictions and 95%CI
@@ -74,6 +40,40 @@ female_year <- left_join(left_join(female %>% group_by(year) %>% tally() %>% ren
 female %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 female %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
 ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Female")
+
+#======================================================================================
+
+#subset for a dataset to store model estimates
+male = filter(pcvpa.mod, sex == 2) %>% select(vtcarr, age, year)
+
+#fit model to individual trajectories & obtain predictions and 95%CI
+model_male = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + artdur + nochild5 + sescat, family = binomial(link = "cloglog"), data = filter(pcvpa.mod, sex == 2), na.action = na.exclude)
+male$fit = predict.gam(model_male, type = "response", se.fit = TRUE)$fit
+male$fit_lci = model_male$family$linkinv(predict.gam(model_male, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_male, type = "link", se.fit = TRUE)$se.fit))
+male$fit_uci = model_male$family$linkinv(predict.gam(model_male, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_male, type = "link", se.fit = TRUE)$se.fit))
+
+#----------------------------------------------------------------------------------
+
+#create age group
+male <- male %>% 
+  mutate(agegp = if_else(age <=24, "18-24",
+                         if_else(age >24 & age <=29, "25-29",
+                                 if_else(age >29 & age <=34, "30-34",
+                                         if_else(age >34 & age <=40, "35-40", NA_character_)))))
+
+#get age group mean predicted prevalence and acquisitions
+male_age <- left_join(left_join(male %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
+male %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
+male %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Male")
+
+#----------------------------------------------------------------------------------
+
+#join observed and predicted datasets for yearey number
+male_year <- left_join(left_join(male %>% group_by(year) %>% tally() %>% rename(Tot = n), 
+male %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
+male %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Male")
 
 #======================================================================================
 
@@ -235,7 +235,7 @@ nochild5 <- nochild5 %>%
 nochild5_age <- left_join(left_join(nochild5 %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 nochild5 %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 nochild5 %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living with <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living without <5y child")
 
 #----------------------------------------------------------------------------------
 
@@ -243,7 +243,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 nochild5_year <- left_join(left_join(nochild5 %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 nochild5 %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 nochild5 %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living with <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living without <5y child")
 
 #======================================================================================
 
@@ -269,7 +269,7 @@ yeschild5 <- yeschild5 %>%
 yeschild5_age <- left_join(left_join(yeschild5 %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 yeschild5 %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 yeschild5 %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living without <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living with <5y child")
 
 #----------------------------------------------------------------------------------
 
@@ -277,7 +277,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 yeschild5_year <- left_join(left_join(yeschild5 %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 yeschild5 %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 yeschild5 %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living without <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living with <5y child")
 
 #======================================================================================
 

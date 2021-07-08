@@ -9,15 +9,12 @@ options(warn = -1)
 
 #======================================================================================
 
-#subset for a correct dataset
-crude = pcvpa.mod %>% select(nvtcarr, agegp, surv, sex, nochild5) %>% group_by(surv) %>%
-  mutate(agegpn = if_else(agegp == 19, "18-20y",
-                          if_else(agegp == 22, "21-23y",
-                                  if_else(agegp == 25, "24-26y",
-                                          if_else(agegp == 28, "27-29y",
-                                                  if_else(agegp == 31, "30-32y",
-                                                          if_else(agegp == 34, "33-35y",
-                                                                  if_else(agegp == 37, "36-38y", "39-40y"))))))))
+#create age group
+crude <- crude %>% 
+  mutate(agegp = as.factor(if_else(age <=24, "18-24",
+                                   if_else(age >24 & age <=29, "25-29",
+                                           if_else(age >29 & age <=34, "30-34",
+                                                   if_else(age >34 & age <=40, "35-40", NA_character_))))))
 
 #fit model to obtain predictions of FOI
 model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
