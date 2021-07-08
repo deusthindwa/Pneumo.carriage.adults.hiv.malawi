@@ -16,15 +16,11 @@ crude <- crude %>%
                                            if_else(age >29 & age <=34, "30-34",
                                                    if_else(age >34 & age <=40, "35-40", NA_character_))))))
 
-#fit model to obtain predictions of FOI
-model_crude = scam(nvtcarr ~ s(agegp, bs="mdcv") + s(surv, bs="mdcv") + sex + nochild5, family = binomial(link = "cloglog"), data = crude)
-crude$foi <- ((-derivative.scam(model_crude, deriv = 1)$d * model_crude$fitted.values) + (1/42*model_crude$fitted.values))/(1-model_crude$fitted.values)
-
 #join observed and predicted datasets for agegp across surveys
-A <- crude %>% filter(nvtcarr != 0) %>% group_by(surv, agegpn) %>% summarise(foi = mean(foi)) %>%
+A <- crude %>% filter(nvtcarr != 0) %>% group_by(surv, agegp) %>% summarise(foi = mean(foi)) %>%
 ggplot() +
-  geom_point(aes(x = surv, y = foi, color = as.factor(agegpn)), size = 1.5, shape = 18) +
-  geom_line(aes(x = surv, y = foi, color = as.factor(agegpn)), size = 0.7) +
+  geom_point(aes(x = surv, y = foi, color = agegp), size = 1.5, shape = 18) +
+  geom_line(aes(x = surv, y = foi, color = agegp), size = 0.7) +
   labs(title = "NVT(-ST3), Overall", x = "Survey number", y = "Force of infection") +
   scale_x_continuous(breaks = seq(1, 8, 1)) +
   ylim(0,0.02) +

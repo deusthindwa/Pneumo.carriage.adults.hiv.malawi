@@ -20,7 +20,7 @@ crude$prenvt <- model_nvt$fitted.values
 crude <- crude %>% mutate(acqvt1 = prevt/11, acqvt2 = prevt/42, acqvt3 = prevt/365.25, acqnvt1 = prenvt/11, acqnvt2 = prenvt/42, acqnvt3 = prenvt/365.25)
 
 #join observed and predicted datasets for survey year
-crude1 <- crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(acqvt1 = mean(acqvt1), acqvt2 = mean(acqvt2), acqvt3 = mean(acqvt3), )
+crude1 <- crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(acqvt1 = mean(acqvt1), acqvt2 = mean(acqvt2), acqvt3 = mean(acqvt3), catg = "VT acquisition ")
 crude2 <- crude %>% filter(nvtcarr != 0) %>% group_by(year) %>% summarise(acqnvt1 = mean(acqnvt1), acqnvt2 = mean(acqnvt2), acqnvt3 = mean(acqnvt3))
 crude3 <- crude %>% filter(vtcarr != 0) %>% group_by(year, agegp) %>% summarise(foi1 = mean(acqvt2))
 crude4 <- crude %>% filter(nvtcarr != 0) %>% group_by(year, agegp) %>% summarise(foi2 = mean(acqnvt2))
@@ -28,8 +28,8 @@ crude5 <- crude %>% filter(vtcarr != 0) %>% group_by(agegp, year) %>% summarise(
 crude6 <- crude %>% filter(nvtcarr != 0) %>% group_by(agegp, year) %>% summarise(foi4 = mean(acqnvt2))
 
 A <- ggplot(data = crude1) +
-  geom_line(aes(x = year, y = acqvt1, color = "11 days"), lty = "dashed", size = 0.7) +
-  geom_line(aes(x = year, y = acqvt2, color = "42 days"), lty = "dashed", size = 0.7) +
+  geom_line(aes(x = year, y = acqvt1, color = "11d"), lty = "dashed", size = 0.7) +
+  geom_line(aes(x = year, y = acqvt2, color = "42d"), lty = "dashed", size = 0.7) +
   scale_colour_manual(name = "Carriage duration", values = c("11d" = "darkblue", "42d" = "darkred")) +
   ylim(0, 0.03) +
   labs(title = "Overall VT carriage", x = "Survey year", y = "Daily carriage acquisition") +
@@ -39,8 +39,8 @@ A <- ggplot(data = crude1) +
   theme(legend.position = c(0.7, 0.7))
 
 B <- ggplot(data = crude2) +
-  geom_line(aes(x = year, y = acqnvt1, color = "11 days"), lty = "dashed", size = 0.7) +
-  geom_line(aes(x = year, y = acqnvt2, color = "42 days"), lty = "dashed", size = 0.7) +
+  geom_line(aes(x = year, y = acqnvt1, color = "11d"), lty = "dashed", size = 0.7) +
+  geom_line(aes(x = year, y = acqnvt2, color = "42d"), lty = "dashed", size = 0.7) +
   scale_colour_manual(name = "Carriage duration", values = c("11d" = "darkblue", "42d" = "darkred")) +
   ylim(0, 0.03) +
   labs(title = "Overall NVT carriage", x = "Survey year", y = "") +
