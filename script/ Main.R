@@ -141,6 +141,8 @@ pcvpa.mod <- pcvpa.mod2 %>%
          nochild5 = as.integer(nochild5),
          sescat = as.integer(sescat)) 
 
+rm(pcvpa.mod1, pcvpa.mod2)
+
 #=======================================================================
 
 #descriptive characteristics of study population (figure 1)
