@@ -6,7 +6,7 @@
 #suppress warnings
 defaultW <- getOption("warn") 
 options(warn = -1)
-
+dur = 42
 #======================================================================================
 
 #subset for a dataset to store model estimates
@@ -31,7 +31,7 @@ female <- female %>%
 female_age <- left_join(left_join(female %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 female %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 female %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Female")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Female")
 
 #----------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 female_year <- left_join(left_join(female %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 female %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 female %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Female")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Female")
 
 #======================================================================================
 
@@ -65,7 +65,7 @@ male <- male %>%
 male_age <- left_join(left_join(male %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 male %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 male %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Male")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Male")
 
 #----------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 male_year <- left_join(left_join(male %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 male %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 male %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Male")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Male")
 
 #======================================================================================
 
@@ -99,7 +99,7 @@ lses <- lses %>%
 lses_age <- left_join(left_join(lses %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 lses %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 lses %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Low SES")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Low SES")
 
 #----------------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 lses_year <- left_join(left_join(lses %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 lses %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 lses %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Low SES")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Low SES")
 
 #======================================================================================
 
@@ -133,7 +133,7 @@ hses <- hses %>%
 hses_age <- left_join(left_join(hses %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 hses %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 hses %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Middle/High SES")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Middle/High SES")
 
 #----------------------------------------------------------------------------------
 
@@ -141,7 +141,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 hses_year <- left_join(left_join(hses %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 hses %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 hses %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Middle/High SES")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Middle/High SES")
 
 #======================================================================================
 
@@ -167,7 +167,7 @@ sart <- sart %>%
 sart_age <- left_join(left_join(sart %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 sart %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 sart %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "ART <3y")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "ART <3y")
 
 #----------------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 sart_year <- left_join(left_join(sart %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 sart %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 sart %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "ART <3y")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "ART <3y")
 
 #======================================================================================
 
@@ -201,7 +201,7 @@ lart <- lart %>%
 lart_age <- left_join(left_join(lart %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 lart %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 lart %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "ART ≥3y")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "ART ≥3y")
 
 #----------------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 lart_year <- left_join(left_join(lart %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 lart %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 lart %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "ART ≥3y")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "ART ≥3y")
 
 #======================================================================================
 
@@ -235,7 +235,7 @@ nochild5 <- nochild5 %>%
 nochild5_age <- left_join(left_join(nochild5 %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 nochild5 %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 nochild5 %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living without <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Living without <5y child")
 
 #----------------------------------------------------------------------------------
 
@@ -243,7 +243,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 nochild5_year <- left_join(left_join(nochild5 %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 nochild5 %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 nochild5 %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living without <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Living without <5y child")
 
 #======================================================================================
 
@@ -269,7 +269,7 @@ yeschild5 <- yeschild5 %>%
 yeschild5_age <- left_join(left_join(yeschild5 %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 yeschild5 %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 yeschild5 %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living with <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Living with <5y child")
 
 #----------------------------------------------------------------------------------
 
@@ -277,7 +277,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 yeschild5_year <- left_join(left_join(yeschild5 %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 yeschild5 %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 yeschild5 %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42, rf = "Living with <5y child")
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur, rf = "Living with <5y child")
 
 #======================================================================================
 

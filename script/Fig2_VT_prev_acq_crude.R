@@ -6,7 +6,7 @@
 #suppress warnings
 defaultW <- getOption("warn") 
 options(warn = -1)
-
+dur = 42
 #----------------------------------------------------------------------------------
 
 #subset for a dataset to store model estimates
@@ -31,7 +31,7 @@ crude <- crude %>%
 crude_age <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 crude %>% filter(vtcarr == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42)
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur)
 
 #----------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 crude_year <- left_join(left_join(crude %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 crude %>% filter(vtcarr == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42)
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur)
 
 #----------------------------------------------------------------------------------
 
@@ -97,7 +97,7 @@ crude <- crude %>%
 crude_age <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
 crude %>% filter(vtcarr1 == 1) %>% group_by(agegp) %>% tally() %>% rename(Pos = n)), 
 crude %>% filter(vtcarr1 != 0) %>% group_by(agegp) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42)
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:4], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[5:8], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur)
 
 #----------------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 crude_year <- left_join(left_join(crude %>% group_by(year) %>% tally() %>% rename(Tot = n), 
 crude %>% filter(vtcarr1 == 1) %>% group_by(year) %>% tally() %>% rename(Pos = n)), 
 crude %>% filter(vtcarr1 != 0) %>% group_by(year) %>% summarise(fit = mean(fit), fit_lci = mean(fit_lci), fit_uci = mean(fit_uci)) %>%
-ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/42, foi_lci = fit_lci/42, foi_uci = fit_uci/42)
+ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[1:5], obs_uci = exactci(Pos, Tot, 0.95)$conf.int[6:10], foi = fit/dur, foi_lci = fit_lci/dur, foi_uci = fit_uci/dur)
 
 #----------------------------------------------------------------------------------
 
