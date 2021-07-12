@@ -40,38 +40,16 @@ rbind((crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mea
 
 rbind((crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt1), dur = "11 days")),
 (crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt2), dur = "42 days"))) %>% mutate(catg = "NVT carriage by age") %>% rename("varx" = agegp)
-) %>% mutate(varx = as_factor(varx), dur = as_factor(dur), catg = as_factor(catg)) %>%
+) %>% mutate(varx = as_factor(varx), dur = as_factor(dur), catg = as_factor(catg), fac = if_else(varx == "2015" | varx == "2016" | varx == "2017" | varx == "2018" | varx == "2019", "year", "age")) %>%
 
 ggplot(aes(x = varx, y = acq, color = dur, group = dur)) +
   geom_line(lty = "dashed", size = 0.7) +
-  facet_grid(~catg + dur) +
+  facet_grid(.~catg, scales = "free_x") +
   theme_bw() +
   ylim(0, 0.03) +
   labs(title = "", x = "", y = "Daily carriage acquisition") +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10))
-
-
-
-crude2 <- crude %>% filter(nvtcarr != 0) %>% group_by(year) %>% summarise(acqnvt1 = mean(acqnvt1), acqnvt2 = mean(acqnvt2)), catg = "NVT carriage duration")
-
-crude3 <- crude %>% filter(vtcarr != 0) %>% group_by(year, agegp) %>% summarise(foi = mean(acqvt2), catg = "VT acquisition by age group")
-crude4 <- crude %>% filter(nvtcarr != 0) %>% group_by(year, agegp) %>% summarise(foi = mean(acqnvt2), catg = "NVT acquisition by age group")
-crude5 <- crude %>% filter(vtcarr != 0) %>% group_by(agegp, year) %>% summarise(foi = mean(acqvt2), catg = "VT acquisition by survey year")
-crude6 <- crude %>% filter(nvtcarr != 0) %>% group_by(agegp, year) %>% summarise(foi = mean(acqnvt2), catg = "NVT acquisition by survey year")
-
-
-
-B <- ggplot(data = crude2) +
-  geom_line(aes(x = year, y = acqnvt1, color = "11d"), lty = "dashed", size = 0.7) +
-  geom_line(aes(x = year, y = acqnvt2, color = "42d"), lty = "dashed", size = 0.7) +
-  scale_colour_manual(name = "Carriage duration", values = c("11d" = "darkblue", "42d" = "darkred")) +
-  ylim(0, 0.03) +
-  labs(title = "Overall NVT carriage", x = "Survey year", y = "") +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
-  theme(legend.position = c(0.7, 0.7))
 
 #======================================================================================
 
