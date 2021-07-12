@@ -24,30 +24,49 @@ model_vt = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + artd
 model_nvt = gam(nvtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + artdur + nochild5 + sescat, family = binomial(link = "cloglog"), data = pcvpa.mod)
 
 crude$prevt <- model_vt$fitted.values
+crude$prevtl = model_vt$family$linkinv(predict.gam(model_vt, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_vt, type = "link", se.fit = TRUE)$se.fit))
+crude$prevtu = model_vt$family$linkinv(predict.gam(model_vt, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_vt, type = "link", se.fit = TRUE)$se.fit))
+
 crude$prenvt <- model_nvt$fitted.values
-crude <- crude %>% mutate(acqvt1 = prevt/11, acqvt2 = prevt/42, acqnvt1 = prenvt/11, acqnvt2 = prenvt/42)
+crude$prenvtl = model_nvt$family$linkinv(predict.gam(model_nvt, type = "link", se.fit = TRUE)$fit - (2 * predict.gam(model_nvt, type = "link", se.fit = TRUE)$se.fit))
+crude$prenvtu = model_nvt$family$linkinv(predict.gam(model_nvt, type = "link", se.fit = TRUE)$fit + (2 * predict.gam(model_nvt, type = "link", se.fit = TRUE)$se.fit))
+
+crude <- crude %>% mutate(acqvt1 = prevt/11, 
+                          acqvt1l = prevtl/11,
+                          acqvt1u = prevtu/11,
+                          acqvt2 = prevt/42, 
+                          acqvt2l = prevtl/42,
+                          acqvt2u = prevtu/42,
+                          acqnvt1 = prenvt/11, 
+                          acqnvt1l = prenvtl/11, 
+                          acqnvt1u = prenvtu/11, 
+                          acqnvt2 = prenvt/42,
+                          acqnvt2l = prenvtl/42,
+                          acqnvt2u = prenvtu/42)
 
 #join observed and predicted datasets for survey year
 rbind(
-rbind((crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqvt1), dur = "11 days")),
-(crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqvt2), dur = "42 days"))) %>% mutate(catg = "VT carriage by year") %>% rename("varx" = year),
+rbind((crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqvt1), acql = mean(acqvt1l), acqu = mean(acqvt1u), dur = "11 days")),
+(crude %>% filter(vtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqvt2), acql = mean(acqvt2l), acqu = mean(acqvt2u), dur = "42 days"))) %>% mutate(catg = "VT carriage by year") %>% rename("varx" = year),
 
-rbind((crude %>% filter(nvtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqnvt1), dur = "11 days")),
-(crude %>% filter(nvtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqnvt2), dur = "42 days"))) %>% mutate(catg = "NVT carriage by year") %>% rename("varx" = year),
+rbind((crude %>% filter(nvtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqnvt1), acql = mean(acqnvt1l), acqu = mean(acqnvt1u), dur = "11 days")),
+(crude %>% filter(nvtcarr != 0) %>% group_by(year) %>% summarise(acq = mean(acqnvt2), acql = mean(acqnvt2l), acqu = mean(acqnvt2u), dur = "42 days"))) %>% mutate(catg = "NVT carriage by year") %>% rename("varx" = year),
 
-rbind((crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqvt1), dur = "11 days")),
-(crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqvt2), dur = "42 days"))) %>% mutate(catg = "VT carriage by age") %>% rename("varx" = agegp),
+rbind((crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqvt1), acql = mean(acqvt1l), acqu = mean(acqvt1u), dur = "11 days")),
+(crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqvt2), acql = mean(acqvt2l), acqu = mean(acqvt2u), dur = "42 days"))) %>% mutate(catg = "VT carriage by age") %>% rename("varx" = agegp),
 
-rbind((crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt1), dur = "11 days")),
-(crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt2), dur = "42 days"))) %>% mutate(catg = "NVT carriage by age") %>% rename("varx" = agegp)
+rbind((crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt1), acql = mean(acqnvt1l), acqu = mean(acqnvt1u), dur = "11 days")),
+(crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt2), acql = mean(acqnvt2l), acqu = mean(acqnvt2u), dur = "42 days"))) %>% mutate(catg = "NVT carriage by age") %>% rename("varx" = agegp)
 ) %>% mutate(varx = as_factor(varx), dur = as_factor(dur), catg = as_factor(catg), fac = if_else(varx == "2015" | varx == "2016" | varx == "2017" | varx == "2018" | varx == "2019", "year", "age")) %>%
 
 ggplot(aes(x = varx, y = acq, color = dur, group = dur)) +
   geom_line(lty = "dashed", size = 0.7) +
+  geom_ribbon(aes(x = varx, y = acq, group = dur, ymin = acql, ymax = acqu, fill = dur), alpha = 0.2) +
   facet_grid(.~catg, scales = "free_x") +
   theme_bw() +
   ylim(0, 0.03) +
   labs(title = "", x = "", y = "Daily carriage acquisition") +
+  guides(color=guide_legend(title="Assumed carriage duration")) +
   theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
   theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10))
 
