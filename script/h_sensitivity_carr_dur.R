@@ -57,18 +57,18 @@ rbind((crude %>% filter(vtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mea
 
 rbind((crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt1), acql = mean(acqnvt1l), acqu = mean(acqnvt1u), dur = "11 days")),
 (crude %>% filter(nvtcarr != 0) %>% group_by(agegp) %>% summarise(acq = mean(acqnvt2), acql = mean(acqnvt2l), acqu = mean(acqnvt2u), dur = "42 days"))) %>% mutate(catg = "NVT carriage by age") %>% rename("varx" = agegp)
-) %>% mutate(varx = as_factor(varx), dur = as_factor(dur), catg = as_factor(catg), fac = if_else(varx == "2015" | varx == "2016" | varx == "2017" | varx == "2018" | varx == "2019", "year", "age")) %>%
+) %>% mutate(varx = as_factor(varx), dur = as_factor(dur), catg = as_factor(catg)) %>%
 
-ggplot(aes(x = varx, y = acq, color = dur, group = dur)) +
-  geom_line(lty = "dashed", size = 0.7) +
+  ggplot() +
+  geom_line(aes(x = varx, y = acq, color = dur, group = dur), lty = "dashed", size = 0.6) +
   geom_ribbon(aes(x = varx, y = acq, group = dur, ymin = acql, ymax = acqu, fill = dur), alpha = 0.2) +
   facet_grid(.~catg, scales = "free_x") +
   theme_bw() +
-  ylim(0, 0.03) +
+  ylim(0, 0.04) +
   labs(title = "", x = "", y = "Daily carriage acquisition") +
-  guides(color=guide_legend(title="Assumed carriage duration")) +
-  theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10)) +
-  theme(plot.title = element_text(size = 14), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10))
+  guides(color=guide_legend(title="Assumed carriage duration"), fill = FALSE) +
+  theme(axis.text.x = element_text(size = 7, face = "bold"), axis.text.y = element_text(size = 7, face = "bold")) +
+  theme(axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8))
 
 #======================================================================================
 

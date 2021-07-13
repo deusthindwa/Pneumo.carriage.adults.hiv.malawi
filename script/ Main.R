@@ -126,9 +126,10 @@ pcvpa.mod1 <- pcvpa.mod %>%
 
 pcvpa.mod2 <- missForest(pcvpa.mod1)
 pcvpa.mod2 <- pcvpa.mod2$ximp
+pcvpa.mod2 <- cbind(select(pcvpa.mod, pid, labid), pcvpa.mod2)
 
 pcvpa.mod <- pcvpa.mod2 %>% 
-  select(vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
+  select(pid, labid, vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
   mutate(vtcarr = as.integer(vtcarr),
          vtcarr1 = as.integer(vtcarr1),
          nvtcarr = as.integer(nvtcarr),
