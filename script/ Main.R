@@ -146,32 +146,29 @@ rm(pcvpa.mod1, pcvpa.mod2)
 
 #=======================================================================
 
-#descriptive characteristics of study population (figure 1)
-source(here("script/b_descriptive_vars.R"))
+#descriptive of study population (figure 1)
+source(here("script/.R"))
 
-#overall carriage prevalence & FOI (figure 2)
-source(here("script/c_crude_prev_foi.R"))
+#overall VT carriage dynamics (figure 2)
+source(here("script/.R"))
 
-#carriage prevalence & FOI by sex (figure 3)
-source(here("script/d_sex_prev_foi.R"))
+#Risk factor VT carriage dynamics (figure 3)
+source(here("script/.R"))
 
-#carriage prevalence & FOI by ART duration (figure 4)
-source(here("script/e_artdur_prev_foi.R"))
+#overall NVT carriage dynamics (figure S1)
+source(here("script/.R"))
 
-#carriage prevalence & FOI by CD4+ count (figure 6)
-source(here("script/f_cd4cnt_prev_foi.R"))
+#Risk factor NVT carriage dynamics (figure S2)
+source(here("script/.R"))
 
-#carriage prevalence & FOI by social economic status (figure 5)
-source(here("script/g_ses_prev_foi.R"))
+#carriage heterogeneity (figure S3)
+source(here("script/.R"))
 
-#sensitivity analysis of the spline types(figure 7)
-source(here("script/h_sensitivity_carr_dur.R"))
+#multiple carriage (figure S4)
+source(here("script/.R"))
 
-#sensitivity analysis of the spline types(figure 7)
-source(here("script/i_sensitivity_spline_prev.R"))
+#model autocorrelation (figure S5)
+source(here("script/.R"))
               
-#sensitivity analysis of the model residuals (figure 8)
-source(here("script/j_sensitivity_model_acf.R"))
-
-#sensitivity analysis of the model residuals (figure 8)
-source(here("script/k_multiplecarr_prev_foi.R"))
+#model selection (figure S6)
+source(here("script/.R"))
