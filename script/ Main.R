@@ -155,12 +155,6 @@ source(here("script/.R"))
 #Risk factor VT carriage dynamics (figure 3)
 source(here("script/.R"))
 
-#overall NVT carriage dynamics (figure S1)
-source(here("script/.R"))
-
-#Risk factor NVT carriage dynamics (figure S2)
-source(here("script/.R"))
-
 #carriage heterogeneity (figure S3)
 source(here("script/.R"))
 
