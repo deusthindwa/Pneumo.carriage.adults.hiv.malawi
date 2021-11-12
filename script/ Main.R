@@ -1,5 +1,5 @@
 #Written by Deus Thindwa
-#Pneumococcal carriage prevalence & FOI in HIV-infected adults in PCV era
+#Pneumococcal carriage prevalence in HIV-infected adults in PCV era
 #Generalized additive model.
 #14/12/2020 - 30/06/2021
 
@@ -77,11 +77,15 @@ pcvpa.des$sescat <- if_else(pcvpa.des$sescat == 1, "Low",
 #cleaning/recoding variables for modelling
 pcvpa.mod <- pcvpa.des
 
+#overall carriage
+pcvpa.mod$carr <- if_else(pcvpa.mod$serogroup == "VT" | pcvpa.mod$serogroup == "NVT", 1L, 
+                            if_else(pcvpa.mod$serogroup == "None", 0L, NA_integer_ ))
+
 #vaccine types
 pcvpa.mod$vtcarr <- if_else(pcvpa.mod$serogroup == "VT", 1L, 
                             if_else(pcvpa.mod$serogroup == "None" | pcvpa.mod$serogroup == "NVT", 0L, NA_integer_ ))
 
-#non-vaaccine types
+#non-vaccine types
 pcvpa.mod$nvtcarr <- if_else(pcvpa.mod$serogroup == "NVT", 1L, 
                              if_else(pcvpa.mod$serogroup == "None" | pcvpa.mod$serogroup == "VT", 0L, NA_integer_))
 
@@ -112,14 +116,14 @@ pcvpa.mod$sescat <- if_else(pcvpa.mod$sescat == "Low", 1L,
                                     if_else(pcvpa.mod$sescat == "High", 2L, NA_integer_)))
 
 #final dataset
-pcvpa.mod <- select(pcvpa.mod, pid, labid, nvtcarr, vtcarr, nvtcarr1, vtcarr1, year, age, seas, sex, sescat, artdur, nochild5)
+pcvpa.mod <- select(pcvpa.mod, pid, labid, carr, nvtcarr, vtcarr, nvtcarr1, vtcarr1, year, age, seas, sex, sescat, artdur, nochild5)
 
 #=======================================================================
 
 #multiple imputation on 
 set.seed(1988)
 pcvpa.mod1 <- pcvpa.mod %>% 
-  select(vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
+  select(carr, vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
   mutate(artdur = as_factor(artdur),
          nochild5 = as_factor(nochild5),
          sescat = as_factor(sescat))
@@ -129,8 +133,9 @@ pcvpa.mod2 <- pcvpa.mod2$ximp
 pcvpa.mod2 <- cbind(select(pcvpa.mod, pid, labid), pcvpa.mod2)
 
 pcvpa.mod <- pcvpa.mod2 %>% 
-  select(pid, labid, vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
-  mutate(vtcarr = as.integer(vtcarr),
+  select(pid, labid, carr, vtcarr, vtcarr1, nvtcarr, nvtcarr1, year, age, seas, sex, artdur, nochild5, sescat) %>% 
+  mutate(carr = as.integer(carr),
+         vtcarr = as.integer(vtcarr),
          vtcarr1 = as.integer(vtcarr1),
          nvtcarr = as.integer(nvtcarr),
          nvtcarr1 = as.integer(nvtcarr1),
@@ -147,10 +152,10 @@ rm(pcvpa.mod1, pcvpa.mod2)
 #=======================================================================
 
 #descriptive of study population (figure 1)
-source(here("script/.R"))
+source(here("script/Fig1_study_descriptive.R"))
 
 #overall VT carriage dynamics (figure 2)
-source(here("script/.R"))
+source(here("script/Fig2_VT_prev_crude.R"))
 
 #Risk factor VT carriage dynamics (figure 3)
 source(here("script/.R"))

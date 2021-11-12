@@ -1,5 +1,5 @@
 #Written by Deus Thindwa
-#Pneumococcal carriage prevalence & FOI in HIV-infected adults in PCV era
+#Pneumococcal carriage prevalence in HIV-infected adults in PCV era
 #Generalized additive model.
 #14/12/2020 - 30/06/2021
 
@@ -86,6 +86,7 @@ F <- ggplot(data = pcvpa.des, mapping = aes(x = serogroup, y = cd4cnt, fill = se
   theme(legend.position = "none")
 
 #sex
+filter(pcvpa.des, !is.na(sex) & serogroup !="None") %>% group_by(sex, serogroup) %>% tally() %>% mutate(sex_p = n/sum(n))
 G <- filter(pcvpa.des, !is.na(sex)) %>% group_by(serogroup, sex) %>% tally() %>% mutate(sex_p = n/sum(n)) %>% 
   ggplot(mapping = aes(x = serogroup, y = sex_p, fill = sex)) + 
   geom_bar(stat = "identity", color = "black", size = 1) +
@@ -97,6 +98,7 @@ G <- filter(pcvpa.des, !is.na(sex)) %>% group_by(serogroup, sex) %>% tally() %>%
   theme(legend.position = "bottom", legend.title = element_blank(), legend.text = element_text(face = "bold", size = 12), legend.box.spacing = unit(0, 'cm'))
 
 #social economic status
+filter(pcvpa.des, !is.na(sescat) & serogroup !="None") %>% group_by(sescat, serogroup) %>% tally() %>% mutate(ses_p = n/sum(n))
 H <- filter(pcvpa.des, !is.na(sescat)) %>% group_by(serogroup, sescat) %>% tally() %>% mutate(ses_p = n/sum(n)) %>%
   ggplot(mapping = aes(x = serogroup, y = ses_p, fill = factor(sescat,levels(factor(sescat))[c(2, 3, 1)]))) + 
   geom_bar(stat = "identity", color = "black", size = 1) +  
@@ -108,6 +110,7 @@ H <- filter(pcvpa.des, !is.na(sescat)) %>% group_by(serogroup, sescat) %>% tally
   theme(legend.position = "bottom", legend.title = element_blank(), legend.text = element_text(face = "bold", size = 12), legend.box.spacing = unit(0, 'cm'))
 
 #ART regimen
+filter(pcvpa.des, !is.na(artreg) & serogroup !="None") %>% group_by(artreg, serogroup) %>% tally() %>% mutate(artreg_p = n/sum(n))
 I <- filter(pcvpa.des, !is.na(artreg)) %>% group_by(serogroup, artreg) %>% tally() %>% mutate(artreg_p = n/sum(n)) %>%
   ggplot(mapping = aes(x = serogroup, y = artreg_p, fill = artreg)) + 
   geom_bar(stat = "identity", color = "black", size = 1) +  
@@ -119,6 +122,7 @@ I <- filter(pcvpa.des, !is.na(artreg)) %>% group_by(serogroup, artreg) %>% tally
   theme(legend.position = "bottom", legend.title = element_blank(), legend.text = element_text(face = "bold", size = 12), legend.box.spacing = unit(0, 'cm'))
 
 #cotrimoxazole
+filter(pcvpa.des, !is.na(ctx) & serogroup !="None") %>% group_by(ctx, serogroup) %>% tally() %>% mutate(ctx_p = n/sum(n))
 J <- filter(pcvpa.des, !is.na(ctx)) %>% group_by(serogroup, ctx) %>% tally() %>% mutate(ctx_p = n/sum(n)) %>%
   ggplot(mapping = aes(x = serogroup, y = ctx_p, fill = ctx)) + 
   geom_bar(stat = "identity", color = "black", size = 1) +  
