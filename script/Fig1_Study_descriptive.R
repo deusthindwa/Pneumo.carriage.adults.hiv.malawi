@@ -134,7 +134,7 @@ J <- filter(pcvpa.des, !is.na(ctx)) %>% group_by(serogroup, ctx) %>% tally() %>%
   theme(legend.position = "bottom", legend.title = element_blank(), legend.text = element_text(face = "bold", size = 12), legend.box.spacing = unit(0, 'cm'))
 
 #combined plots
-ggsave(here("output", "Fig1_descriptive.tiff"),
+ggsave(here("output", "Fig1_descriptive.png"),
        plot = (A + inset_element(X, right = 0.7, bottom = 0.4, left = 0.3, top = 0.9) + B + C) / (D | E | F | G | H | I | J),
        width = 22, height = 13, unit="in", dpi = 250)
 
@@ -146,20 +146,20 @@ ggsave(here("output", "Fig1_descriptive.tiff"),
 filter(pcvpa.des, !is.na(age)) %>% group_by(serogroup) %>% summarise(median(age), quantile(age, 1/4), quantile(age, 3/4))
 filter(pcvpa.des, serogroup == "NVT" | serogroup == "VT" & !is.na(age)) %>% summarise(median(age), quantile(age, 1/4), quantile(age, 3/4))
 filter(pcvpa.des, !is.na(age)) %>% summarise(median(age), quantile(age, 1/4), quantile(age, 3/4))
-ci.median(subset(pcvpa.des, !is.na(age) & serogroup == "VT")$age)
-ci.median(subset(pcvpa.des, !is.na(age) & serogroup == "NVT")$age)
+median_se(subset(pcvpa.des, !is.na(age) & serogroup == "VT")$age)
+median_se(subset(pcvpa.des, !is.na(age) & serogroup == "NVT")$age)
 
 #ART duration
 filter(pcvpa.des, !is.na(artdur)) %>% group_by(serogroup) %>% summarise(median(artdur), quantile(artdur, 1/4), quantile(artdur, 3/4))
 filter(pcvpa.des, (serogroup == "NVT" | serogroup == "VT") & !is.na(artdur)) %>% summarise(median(artdur), quantile(artdur, 1/4), quantile(artdur, 3/4))
 filter(pcvpa.des, !is.na(artdur)) %>% summarise(median(artdur), quantile(artdur, 1/4), quantile(artdur, 3/4))
-ci.median(subset(pcvpa.des, !is.na(artdur) & serogroup == "VT")$artdur)
-ci.median(subset(pcvpa.des, !is.na(artdur) & serogroup == "NVT")$artdur)
+median_se(subset(pcvpa.des, !is.na(artdur) & serogroup == "VT")$artdur)
+median_se(subset(pcvpa.des, !is.na(artdur) & serogroup == "NVT")$artdur)
 
 #CD4+ count
 filter(pcvpa.des, !is.na(cd4cnt)) %>% group_by(serogroup) %>% summarise(median(cd4cnt), quantile(cd4cnt, 1/4), quantile(cd4cnt, 3/4))
 filter(pcvpa.des, (serogroup == "NVT" | serogroup == "VT") & !is.na(cd4cnt)) %>% summarise(median(cd4cnt), quantile(cd4cnt, 1/4), quantile(cd4cnt, 3/4))
 filter(pcvpa.des, !is.na(cd4cnt)) %>% summarise(median(cd4cnt), quantile(cd4cnt, 1/4), quantile(cd4cnt, 3/4))
-ci.median(subset(pcvpa.des, !is.na(cd4cnt) & serogroup == "VT")$cd4cnt)
-ci.median(subset(pcvpa.des, !is.na(cd4cnt) & serogroup == "NVT")$cd4cnt)
+median_se(subset(pcvpa.des, !is.na(cd4cnt) & serogroup == "VT")$cd4cnt)
+median_se(subset(pcvpa.des, !is.na(cd4cnt) & serogroup == "NVT")$cd4cnt)
 

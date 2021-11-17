@@ -5,12 +5,16 @@
 
 #=======================================================================
 
+#install once 'costatcompanion' R package to use its 'median_se' function
+#install.packages("remotes")
+#remotes::install_github("benediktclaus/costatcompanion")
+
 # load the require packages
 if (!require(pacman)){
   install.packages("pacman")
 }
 pacman::p_load(char = c("tidyverse", "lubridate", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
-                        "MuMIn","PropCIs", "forecast", "missForest", "broman", "here"))
+                        "MuMIn","PropCIs", "forecast", "missForest", "broman", "costatcompanion", "here"))
 
 #Yesoptions(stringsAsFactors = FALSE)
 setwd(here::here())
