@@ -5,12 +5,16 @@
 
 #=======================================================================
 
+#install once 'costatcompanion' R package to use its 'median_se' function
+#install.packages("remotes")
+#remotes::install_github("benediktclaus/costatcompanion")
+
 # load the require packages
 if (!require(pacman)){
   install.packages("pacman")
 }
 pacman::p_load(char = c("tidyverse", "lubridate", "table1", "readstata13", "patchwork", "boot","mgcv", "devtools", "Metrics", 
-                        "MuMIn","PropCIs", "forecast", "missForest", "broman", "here"))
+                        "MuMIn","PropCIs", "forecast", "missForest", "broman", "costatcompanion", "here"))
 
 #Yesoptions(stringsAsFactors = FALSE)
 setwd(here::here())
@@ -155,10 +159,10 @@ rm(pcvpa.mod1, pcvpa.mod2)
 source(here("script/Fig1_study_descriptive.R"))
 
 #overall VT carriage dynamics (figure 2)
-source(here("script/Fig2_VT_prev_crude.R"))
+source(here("script/Fig2_Overall_VT_prev_crude.R"))
 
 #Risk factor VT carriage dynamics (figure 3)
-source(here("script/.R"))
+source(here("script/Fig3_Overall_VT_prev_risk_factors.R"))
 
 #carriage heterogeneity (figure S3)
 source(here("script/.R"))
