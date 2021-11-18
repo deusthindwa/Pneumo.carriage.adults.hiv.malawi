@@ -147,7 +147,7 @@ B <- ggplot(rbind(crude_year1, crude_year2, crude_year3)) +
   theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 10)) +
   theme(plot.title = element_text(size = 20), axis.title.x = element_text(size = 10), axis.title.y = element_blank(), axis.text.y=element_blank()) + 
   theme(legend.position = "right") +
-  guides(color = guide_legend(title = "Pneumococcal carriage"), size = guide_legend(title = "Sample size"), group = "none", fill = "none") +
+  guides(color = guide_legend(title = "Pneumococcal carriage"), size = guide_legend(title = "Number of positive\ncarriage samples"), group = "none", fill = "none") +
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1))
 
 #=================================================================================

@@ -152,6 +152,7 @@ rbind(female, male, lses, hses, sart, lart, nochild5, yeschild5) %>%
   theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 10)) +
   theme(axis.title.x = element_blank(), axis.text.x = element_blank()) + 
   theme(legend.position = "top") + 
+  guides(color = guide_legend(title = "Risk factor\ncategory"), fill = guide_legend(title = "Risk factor\ncategory"), group = guide_legend(title = "Risk factor\ncategory"), size = guide_legend(title = "Number of positive\ncarriage samples")) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1))
 
 #===================================================================================
@@ -180,17 +181,15 @@ B <- left_join(
   geom_ribbon(aes(x = year, y = fit, group = category, fill = category, color = category, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, size = 0.1) + 
   coord_cartesian(ylim = c(0, 0.8)) +
   scale_y_continuous(breaks = seq(0, 1, 0.1), labels = scales::percent_format(accuracy = 1)) +  
-  scale_x_discrete(expand = c(0.05,0.05)) +
-  labs(title = "", x = NULL, y = "") +
+  labs(title = "", x = NULL, y = "Overall carriage prevalence") +
   facet_grid(.~status) +
-  theme_bw() + 
+  theme_bw() +
   theme(strip.text.x = element_text(size = 16), strip.text.y = element_text(size = 16), strip.background = element_rect(fill = "white")) +
   geom_hline(yintercept=0.05, linetype = "dashed", color = "black", size = 0.2) +
   theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 10)) +
-  theme(axis.title.x = element_blank(), axis.text.x = element_blank(), axis.title.y = element_blank(), axis.text.y=element_blank()) + 
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank()) + 
   theme(legend.position = "none") + 
-  theme(panel.border = element_rect(colour = "black", fill = NA, size = 1)) +
-  theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))
+  theme(panel.border = element_rect(colour = "black", fill = NA, size = 1))
 
 #======================================================================================
 #======================================================================================
@@ -384,5 +383,5 @@ options(warn = defaultW)
 
 ggsave(here("output", "Fig3_Overall_VT_prev_risk_factors.png"),
        plot = ((A | B)/(C | D)),
-       width = 24, height = 12, unit="in", dpi = 300)
+       width = 23, height = 10, unit="in", dpi = 300)
 
