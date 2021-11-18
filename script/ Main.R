@@ -74,7 +74,7 @@ pcvpa.des$sescat <- if_else(pcvpa.des$sescat == 1, "Low",
 
 #=======================================================================
 
-#cleaning/recoding variables for modelling
+#cleaning/recoding variables for modeling
 pcvpa.mod <- pcvpa.des
 
 #overall carriage
