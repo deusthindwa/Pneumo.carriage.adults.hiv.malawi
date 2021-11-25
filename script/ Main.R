@@ -164,14 +164,22 @@ source(here("script/Fig2_Overall_VT_prev_crude.R"))
 #Risk factor VT carriage dynamics (figure 3)
 source(here("script/Fig3_Overall_VT_prev_risk_factors.R"))
 
-#carriage heterogeneity (figure S3)
-source(here("script/.R"))
+#carriage heterogeneity (figure S1)
+source(here("script/FigS1_age_time_heterogeneity.R"))
 
-#multiple carriage (figure S4)
-source(here("script/.R"))
+#multiple carriage (figure S2)
+source(here("script/FigS2_multiple_carriage.R"))
 
-#model autocorrelation (figure S5)
-source(here("script/.R"))
+#model autocorrelation (figure S3)
+source(here("scriptFigS3_overall_carriage_ACF/.R"))
               
-#model selection (figure S6)
-source(here("script/.R"))
+#model selection (figure S4)
+source(here("script/FigS4_VT_carriage_ACF.R"))
+
+#model selection (figure S5)
+source(here("script/FigS5_model_selection.R"))
+
+
+
+
+

@@ -24,10 +24,10 @@ crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link
 
 #create age groups
 crude <- crude %>% 
-  mutate(agegp = as.factor(if_else(age <=24, "18-24",
-                         if_else(age >24 & age <=29, "25-29",
-                                 if_else(age >29 & age <=34, "30-34",
-                                                 if_else(age >34 & age <=40, "35-40", NA_character_))))))
+  mutate(agegp = as.factor(if_else(age <=24, "18-24y",
+                         if_else(age >24 & age <=29, "25-29y",
+                                 if_else(age >29 & age <=34, "30-34y",
+                                                 if_else(age >34 & age <=40, "35-40y", NA_character_))))))
 
 #get predicted mean prevalence for each age group 
 crude_age1 <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
@@ -60,10 +60,10 @@ crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link
 
 #create age group
 crude <- crude %>% 
-  mutate(agegp = as.factor(if_else(age <=24, "18-24",
-                                   if_else(age >24 & age <=29, "25-29",
-                                           if_else(age >29 & age <=34, "30-34",
-                                                   if_else(age >34 & age <=40, "35-40", NA_character_))))))
+  mutate(agegp = as.factor(if_else(age <=24, "18-24y",
+                                   if_else(age >24 & age <=29, "25-29y",
+                                           if_else(age >29 & age <=34, "30-34y",
+                                                   if_else(age >34 & age <=40, "35-40y", NA_character_))))))
 
 #get predicted mean prevalence for each age group
 crude_age2 <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
@@ -96,10 +96,10 @@ crude$fit_uci = model_crude$family$linkinv(predict.gam(model_crude, type = "link
 
 #create age group
 crude <- crude %>% 
-  mutate(agegp = as.factor(if_else(age <=24, "18-24",
-                                   if_else(age >24 & age <=29, "25-29",
-                                           if_else(age >29 & age <=34, "30-34",
-                                                   if_else(age >34 & age <=40, "35-40", NA_character_))))))
+  mutate(agegp = as.factor(if_else(age <=24, "18-24y",
+                                   if_else(age >24 & age <=29, "25-29y",
+                                           if_else(age >29 & age <=34, "30-34y",
+                                                   if_else(age >34 & age <=40, "35-40y", NA_character_))))))
 
 #get predicted mean prevalence for each age group
 crude_age3 <- left_join(left_join(crude %>% group_by(agegp) %>% tally() %>% rename(Tot = n), 
@@ -118,7 +118,9 @@ ungroup()) %>% mutate(obs = Pos/Tot, obs_lci = exactci(Pos, Tot, 0.95)$conf.int[
 #=================================================================================
 
 #plot prevalence curves
-A <- ggplot(rbind(crude_age1, crude_age2, crude_age3)) + 
+A <- rbind(crude_age1, crude_age2, crude_age3) %>%
+  mutate(status = factor(status, levels = c('Overall carriage', 'VT(+st3) carriage', 'VT(-st3) carriage'))) %>%
+  ggplot() + 
   geom_point(aes(x = agegp, y = obs, size = Pos, color = status), shape = 1, position=position_dodge(width=0.05)) + 
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci, color = status), width = 0, size = 0.3, position=position_dodge(width=0.05)) + 
   geom_line(aes(x = agegp, y = fit, group = status, color = status), size = 1) + 
@@ -134,7 +136,9 @@ A <- ggplot(rbind(crude_age1, crude_age2, crude_age3)) +
   theme(legend.position = "none") + 
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1))
 
-B <- ggplot(rbind(crude_year1, crude_year2, crude_year3)) + 
+B <- rbind(crude_year1, crude_year2, crude_year3) %>%
+  mutate(status = factor(status, levels = c('Overall carriage', 'VT(+st3) carriage', 'VT(-st3) carriage'))) %>%
+  ggplot() + 
   geom_point(aes(x = year, y = obs, size = Pos, color = status), shape = 1, position=position_dodge(width=0.05)) + 
   geom_errorbar(aes(year, ymin = obs_lci, ymax = obs_uci, color = status), width = 0, size = 0.3, position=position_dodge(width=0.05)) + 
   geom_line(aes(x = year, y = fit, group = status, color = status), size = 1) + 
