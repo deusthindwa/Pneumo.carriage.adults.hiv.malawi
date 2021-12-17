@@ -158,7 +158,7 @@ rm(pcvpa.mod1, pcvpa.mod2)
 #descriptive of study population (figure 1)
 source(here("script/Fig1_study_descriptive.R"))
 
-#overall VT carriage dynamics (figure 2)
+#overall and VT carriage dynamics (figure 2)
 source(here("script/Fig2_Overall_VT_prev_crude.R"))
 
 #Risk factor VT carriage dynamics (figure 3)
@@ -179,7 +179,8 @@ source(here("script/FigS4_VT_carriage_ACF.R"))
 #model selection (figure S5)
 source(here("script/FigS5_model_selection.R"))
 
-
+#model selection (figure S6)
+source(here("script/FigS6_age_ART_duration.R"))
 
 
 
