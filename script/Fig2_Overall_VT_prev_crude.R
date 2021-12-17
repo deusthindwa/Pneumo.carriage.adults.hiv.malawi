@@ -1,7 +1,7 @@
 #Written by Deus Thindwa
 #Pneumococcal carriage prevalence in HIV-infected adults in PCV era
 #Generalized additive model.
-#14/12/2020 - 20/11/2021
+#14/12/2020 - 17/12/2021
 
 #suppress warnings
 defaultW <- getOption("warn") 

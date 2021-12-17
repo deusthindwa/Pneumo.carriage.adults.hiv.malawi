@@ -1,8 +1,15 @@
-ggplot(data = pcvpa.des) +
-  #geom_density(aes(x = age)) + 
-  geom_density(aes(x = artdur))
+#Written by Deus Thindwa
+#Pneumococcal carriage prevalence & acquisition in HIV-infected adults in PCV era
+#Generalized additive model.
+#14/12/2020 - 17/12/2021
 
-#duration on ART distribution
+#suppress warnings
+defaultW <- getOption("warn") 
+options(warn = -1) 
+
+#======================================================================================
+
+#age distribution
 A <- pcvpa.des %>%  
   ggplot() + 
   geom_histogram(aes(x = age), bins = 23, color = "black", fill =  brocolors("crayons")["Goldenrod"]) +
@@ -43,6 +50,10 @@ C <- pcvpa.des %>%
   theme(plot.title = element_text(size = 22), axis.title.x = element_text(face = "bold", size = 12), axis.title.y = element_text(face = "bold", size = 12)) +
   theme(legend.position = "none")
 
+#=======================================================================================
+
+#turn on warnings
+options(warn = defaultW)
 
 #combined plots
 ggsave(here("output", "FigS6_age_ART_duration.png"),
