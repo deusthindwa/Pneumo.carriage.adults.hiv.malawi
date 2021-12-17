@@ -23,43 +23,39 @@ yeschild5_vt = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + 
 
 #======================================================================================
 
-A <- ggAcf(overall_vt1$residuals, type = "partial", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
-  labs(title = "VT(-st3) carriage", x = "", y = "Autocorrelation (ACF)") + 
+A <- ggAcf(overall_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
+  labs(title = "VT carriage", x = "", y = "") + 
   theme_bw()
 
-B <- ggAcf(overall_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
-  labs(title = "VT(+st3) carriage", x = "", y = "") + 
-  theme_bw()
-
-C <- ggAcf(female_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
+B <- ggAcf(female_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "Female", x = "", y = "") + 
   theme_bw() 
 
-D <- ggAcf(male_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
+C <- ggAcf(male_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "Male", x = "", y = "") + 
   theme_bw()  
 
-E <- ggAcf(lses_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
+D <- ggAcf(lses_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "Low SES", x = "", y = "") + 
   theme_bw()  
 
-F <- ggAcf(hses_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
+E <- ggAcf(hses_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "Middle/High SES", x = "Survey year", y = "Autocorrelation (ACF)") + 
   theme_bw()  
 
-G <- ggAcf(sart_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
+F <- ggAcf(sart_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "ART <3y", x = "Survey year", y = "") + 
   theme_bw()  
 
-H <- ggAcf(lart_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
+G <- ggAcf(lart_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "ART ≥3y", x = "Survey year", y = "") + 
   theme_bw()  
 
-I <- ggAcf(yeschild5_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
+H <- ggAcf(yeschild5_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "With <5y child", x = "Survey year", y = "") + 
   theme_bw()
 
-J <- ggAcf(nochild5_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
+I <- ggAcf(nochild5_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
   labs(title = "Without <5y child", x = "Survey year", y = "") + 
   theme_bw()  
 
@@ -69,6 +65,6 @@ J <- ggAcf(nochild5_vt$residuals, type = "correlation", lag.max = 5, color = "re
 options(warn = defaultW)
 
 ggsave(here("output", "FigS4_VT_carriage_ACF.png"),
-       plot = (A | B | C | D | E)/(F | G | H | I | J),
+       plot = (A | B | C | D | E)/(F | G | H | I),
        width = 11, height = 6, unit="in", dpi = 300)
 

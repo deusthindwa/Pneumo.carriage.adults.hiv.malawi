@@ -64,10 +64,10 @@ crude$foi_vt2 <- model_crude$fitted.values
 ggsave(here("output", "FigS2_multiple_carriage.png"),
        
 plot = rbind(
-  crude %>% filter(vtcarr == 1) %>% group_by(year) %>% summarise(foi = mean(foi_vt)) %>% mutate(detection = "Latex", catg = "B, VT(+st3) carriage across time (years)") %>% rename("varx" = year),
-  crude %>% filter(vtcarr2 == 1) %>% group_by(year) %>% summarise(foi = mean(foi_vt2)) %>% mutate(detection = "Microarray", catg = "B, VT(+st3) carriage across time (years)") %>% rename("varx" = year),
-  crude %>% filter(vtcarr == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_vt)) %>% mutate(detection = "Latex", catg = "A, VT(+st3) carriage across age group (years)") %>% rename("varx" = agegp),
-  crude %>% filter(vtcarr2 == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_vt2)) %>% mutate(detection = "Microarray", catg = "A, VT(+st3) carriage across age group (years)") %>% rename("varx" = agegp)
+  crude %>% filter(vtcarr == 1) %>% group_by(year) %>% summarise(foi = mean(foi_vt)) %>% mutate(detection = "Latex", catg = "B, VT carriage across time (years)") %>% rename("varx" = year),
+  crude %>% filter(vtcarr2 == 1) %>% group_by(year) %>% summarise(foi = mean(foi_vt2)) %>% mutate(detection = "Microarray", catg = "B, VT carriage across time (years)") %>% rename("varx" = year),
+  crude %>% filter(vtcarr == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_vt)) %>% mutate(detection = "Latex", catg = "A, VT carriage across age group (years)") %>% rename("varx" = agegp),
+  crude %>% filter(vtcarr2 == 1) %>% group_by(agegp) %>% summarise(foi = mean(foi_vt2)) %>% mutate(detection = "Microarray", catg = "A, VT carriage across age group (years)") %>% rename("varx" = agegp)
   ) %>% 
 
  ggplot() +
@@ -85,7 +85,7 @@ plot = rbind(
   guides(color = guide_legend(title = "Detection method")) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1)),
 
-width = 10, height = 4, unit="in", dpi = 200)
+width = 10, height = 4, unit="in", dpi = 300)
 
 #=======================================================================================
 

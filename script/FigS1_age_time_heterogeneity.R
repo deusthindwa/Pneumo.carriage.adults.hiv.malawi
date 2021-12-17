@@ -31,7 +31,7 @@ crude$prev1 <- model1$fitted.values
 
 A <- rbind(
   crude %>% filter(carr != 0) %>% group_by(year, agegp) %>% summarise(prev = mean(prev0)) %>% mutate(cat = "A, Overall carriage across age"),
-  crude %>% filter(vtcarr != 0) %>% group_by(year, agegp) %>% summarise(prev = mean(prev1)) %>% mutate(cat = "B, VT(+st3) carriage across age")
+  crude %>% filter(vtcarr != 0) %>% group_by(year, agegp) %>% summarise(prev = mean(prev1)) %>% mutate(cat = "B, VT carriage across age")
 ) %>%
   
   ggplot() +
@@ -50,7 +50,7 @@ A <- rbind(
 
 B <- rbind(
 crude %>% filter(carr != 0) %>% group_by(agegp, year) %>% summarise(prev = mean(prev0))  %>% mutate(cat = "C, Overall carriage across time"),
-crude %>% filter(vtcarr != 0) %>% group_by(agegp, year) %>% summarise(prev = mean(prev1)) %>% mutate(cat = "D, VT(+st3) carriage across time")
+crude %>% filter(vtcarr != 0) %>% group_by(agegp, year) %>% summarise(prev = mean(prev1)) %>% mutate(cat = "D, VT carriage across time")
 ) %>%
 
   ggplot() +
@@ -73,4 +73,4 @@ options(warn = defaultW)
 
 ggsave(here("output", "FigS1_age_time_heterogeneity.png"),
        plot = (A | B),
-       width = 15, height = 5, unit="in", dpi = 200)
+       width = 15, height = 5, unit="in", dpi = 300)

@@ -137,7 +137,7 @@ rbind(female, male, lses, hses, sart, lart, nochild5, yeschild5) %>%
   
   #plot prevalence curves
   ggplot() + 
-  geom_point(aes(x = agegp, y = obs, size = Pos, color = category), shape = 1, position=position_dodge(width=0.05)) + 
+  geom_point(aes(x = agegp, y = obs, size = Tot, color = category), shape = 1, position=position_dodge(width=0.05)) + 
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci, color = category), width = 0, size = 0.3, position=position_dodge(width=0.05)) + 
   geom_line(aes(x = agegp, y = fit, group = category, color = category), size = 1) + 
   geom_ribbon(aes(x = agegp, y = fit, group = category, fill = category, color = category, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, size = 0.1) + 
@@ -149,10 +149,10 @@ rbind(female, male, lses, hses, sart, lart, nochild5, yeschild5) %>%
   theme_bw() + 
   theme(strip.text.x = element_text(size = 16), strip.text.y = element_text(size = 16), strip.background = element_rect(fill = "white")) +
   geom_hline(yintercept=0.05, linetype = "dashed", color = "black", size = 0.2) +
-  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 10)) +
+  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 11)) +
   theme(axis.title.x = element_blank(), axis.text.x = element_blank()) + 
   theme(legend.position = "top") + 
-  guides(color = guide_legend(title = "Risk factor\ncategory"), fill = guide_legend(title = "Risk factor\ncategory"), group = guide_legend(title = "Risk factor\ncategory"), size = guide_legend(title = "Number of positive\ncarriage samples")) +
+  guides(color = guide_legend(title = "Risk factor\ncategory"), fill = guide_legend(title = "Risk factor\ncategory"), group = guide_legend(title = "Risk factor\ncategory"), size = guide_legend(title = "Total samples")) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1))
 
 #===================================================================================
@@ -175,7 +175,7 @@ B <- left_join(
   
   #plot prevalence curves
   ggplot() + 
-  geom_point(aes(x = year, y = obs, size = Pos, color = category), shape = 1, position=position_dodge(width=0.05)) + 
+  geom_point(aes(x = year, y = obs, size = Tot, color = category), shape = 1, position=position_dodge(width=0.05)) + 
   geom_errorbar(aes(year, ymin = obs_lci, ymax = obs_uci, color = category), width = 0, size = 0.3, position=position_dodge(width=0.05)) + 
   geom_line(aes(x = year, y = fit, group = category, color = category), size = 1) + 
   geom_ribbon(aes(x = year, y = fit, group = category, fill = category, color = category, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, size = 0.1) + 
@@ -186,7 +186,7 @@ B <- left_join(
   theme_bw() +
   theme(strip.text.x = element_text(size = 16), strip.text.y = element_text(size = 16), strip.background = element_rect(fill = "white")) +
   geom_hline(yintercept=0.05, linetype = "dashed", color = "black", size = 0.2) +
-  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 10)) +
+  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 11)) +
   theme(axis.title.x = element_blank(), axis.text.x = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank()) + 
   theme(legend.position = "none") + 
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1))
@@ -322,19 +322,19 @@ C <- left_join(
   
   #plot prevalence curves
   ggplot() + 
-  geom_point(aes(x = agegp, y = obs, size = Pos, color = category), shape = 1, position=position_dodge(width=0.05)) + 
+  geom_point(aes(x = agegp, y = obs, size = Tot, color = category), shape = 1, position=position_dodge(width=0.05)) + 
   geom_errorbar(aes(agegp, ymin = obs_lci, ymax = obs_uci, color = category), width = 0, size = 0.3, position=position_dodge(width=0.05)) + 
   geom_line(aes(x = agegp, y = fit, group = category, color = category), size = 1) + 
   geom_ribbon(aes(x = agegp, y = fit, group = category, fill = category, color = category, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, size = 0.1) + 
   coord_cartesian(ylim = c(0, 0.45)) +
   scale_y_continuous(breaks = seq(0, 1, 0.1), labels = scales::percent_format(accuracy = 1)) +  
   scale_x_discrete(expand = c(0.05,0.05)) +
-  labs(title = "", x = "Age group (years)", y = "VT(+st3) carr1iage prevalence") +
+  labs(title = "", x = "Age group (years)", y = "VT carriage prevalence") +
   facet_grid(.~status) +
   theme_bw() + 
   theme(strip.text.x = element_blank(), strip.text.y = element_blank(), strip.background = element_rect(fill = "white")) +
   geom_hline(yintercept=0.05, linetype = "dashed", color = "black", size = 0.2) +
-  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 10)) +
+  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 11)) +
   theme(plot.title = element_text(size = 20), axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) + 
   theme(legend.position = "none") +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1)) 
@@ -359,7 +359,7 @@ D <- left_join(
   
   #plot prevalence curves
   ggplot() + 
-  geom_point(aes(x = year, y = obs, size = Pos, color = category), shape = 1, position=position_dodge(width=0.05)) + 
+  geom_point(aes(x = year, y = obs, size = Tot, color = category), shape = 1, position=position_dodge(width=0.05)) + 
   geom_errorbar(aes(year, ymin = obs_lci, ymax = obs_uci, color = category), width = 0, size = 0.3, position=position_dodge(width=0.05)) + 
   geom_line(aes(x = year, y = fit, group = category, color = category), size = 1) + 
   geom_ribbon(aes(x = year, y = fit, group = category, fill = category, color = category, ymin = fit_lci, ymax = fit_uci), alpha = 0.2, size = 0.1) + 
@@ -371,7 +371,7 @@ D <- left_join(
   theme_bw() + 
   theme(strip.text.x = element_blank(), strip.text.y = element_blank(), strip.background = element_rect(fill = "white")) +
   geom_hline(yintercept=0.05, linetype = "dashed", color = "black", size = 0.2) +
-  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 10)) +
+  theme(axis.text.x = element_text(face = "bold", size = 10), axis.text.y = element_text(face = "bold", size = 11)) +
   theme(plot.title = element_text(size = 20), axis.title.x = element_text(size = 10), axis.title.y = element_blank(), axis.text.y=element_blank()) + 
   theme(legend.position = "none") + 
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1))

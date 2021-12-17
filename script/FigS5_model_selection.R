@@ -180,7 +180,7 @@ ggplot() +
   scale_color_discrete(breaks=c("Natural cubic spline", "Thin plate regression spline", "P-spline", "Cubic regression spline")) +
   facet_grid(.~status, scales = "free") +
   guides(color = guide_legend(title=""), size = FALSE) +
-  labs(title = "", x = "", y = "VT(+st3) carriage prevalence") +
+  labs(title = "", x = "", y = "VT carriage prevalence") +
   theme_bw() +
   theme(strip.text.x = element_text(size = 14), strip.text.y = element_text(size = 14), strip.background = element_rect(fill = "white")) +
   scale_y_continuous(breaks = seq(0, 1, 0.05), limits = c(0,0.25), labels = scales::percent_format(accuracy = 1)) +  
@@ -253,6 +253,6 @@ ggplot() +
 #turn on warnings
 options(warn = defaultW)
 
-ggsave(here("output", "SFig5_model_selection.png"),
+ggsave(here("output", "FigS5_model_selection.png"),
        plot = ((A | B)/(C | D)),
-       width = 18, height = 8, unit="in", dpi = 200)
+       width = 18, height = 8, unit="in", dpi = 300)
