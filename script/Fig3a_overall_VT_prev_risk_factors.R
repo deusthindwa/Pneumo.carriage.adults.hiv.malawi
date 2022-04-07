@@ -124,6 +124,27 @@ nochild5 %>% filter(carr == 1) %>% summarise(total = sum(carr), mfit = mean(fit)
 yeschild5 %>% filter(carr == 1) %>% summarise(total = sum(carr), mfit = mean(fit), lfit = mean(fit_lci), ufit = mean(fit_uci))
 
 #===================================================================================
+
+# combined datasets for interaction test
+interaction <- rbind(female, male, lses, hses, sart, lart, nochild5, yeschild5) %>% 
+  mutate(agegp = if_else(age <=24, "18-24",
+                         if_else(age >24 & age <=29, "25-29",
+                                 if_else(age >29 & age <=34, "30-34",
+                                         if_else(age >34 & age <=40, "35-40", NA_character_)))))
+
+# test for interaction between age group and independent variable
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "Sex")))
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "SES")))
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "ART duration")))
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "Cohabitation status")))
+
+# test for interaction between time and independent variable
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "Sex")))
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "SES")))
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "ART duration")))
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "Cohabitation status")))
+
+#===================================================================================
 #===================================================================================
 
 #subset for a dataset to store model estimates
@@ -239,4 +260,29 @@ lart %>% filter(vtcarr == 1) %>% summarise(total = sum(vtcarr), mfit = mean(fit)
 # U5 child
 nochild5 %>% filter(vtcarr == 1) %>% summarise(total = sum(vtcarr), mfit = mean(fit), lfit = mean(fit_lci), ufit = mean(fit_uci))
 yeschild5 %>% filter(vtcarr == 1) %>% summarise(total = sum(vtcarr), mfit = mean(fit), lfit = mean(fit_lci), ufit = mean(fit_uci))
+
+#===================================================================================
+
+# combined datasets for interaction test
+interaction <- rbind(female, male, lses, hses, sart, lart, nochild5, yeschild5) %>% 
+  mutate(agegp = if_else(age <=24, "18-24",
+                         if_else(age >24 & age <=29, "25-29",
+                                 if_else(age >29 & age <=34, "30-34",
+                                         if_else(age >34 & age <=40, "35-40", NA_character_)))))
+
+
+# test for interaction between age group and independent variable
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "Sex")))
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "SES")))
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "ART duration")))
+summary(aov(fit ~ agegp * category, data = interaction %>% filter(status == "Cohabitation status")))
+
+# test for interaction between age group and independent variable
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "Sex")))
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "SES")))
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "ART duration")))
+summary(aov(fit ~ year * category, data = interaction %>% filter(status == "Cohabitation status")))
+
+#===================================================================================
+
 

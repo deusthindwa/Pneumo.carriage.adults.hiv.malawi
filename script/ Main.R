@@ -162,7 +162,13 @@ source(here("script/Fig1_study_descriptive.R"))
 source(here("script/Fig2_Overall_VT_prev_crude.R"))
 
 #Risk factor VT carriage dynamics (figure 3)
-source(here("script/Fig3_Overall_VT_prev_risk_factors.R"))
+source(here("script/Fig3a_Overall_VT_prev_risk_factors.R"))
+
+#Risk factor VT carriage dynamics (figure 3)
+source(here("script/Fig3b_Overall_VT_prev_risk_factors.R"))
+
+#Risk factor VT carriage dynamics (figure 3)
+source(here("script/Fig3c_Overall_VT_prev_risk_factors.R"))
 
 #carriage heterogeneity (figure S1)
 source(here("script/FigS1_age_time_heterogeneity.R"))
