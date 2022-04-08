@@ -24,7 +24,7 @@ yeschild5_vt = gam(vtcarr ~ te(age, bs="ps") + te(year, bs="ps") + seas + sex + 
 #======================================================================================
 
 A <- ggAcf(overall_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
-  labs(title = "VT carriage", x = "", y = "") + 
+  labs(title = "VT carriage", x = "", y = "Autocorrelation (ACF)") + 
   theme_bw()
 
 B <- ggAcf(female_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
@@ -40,11 +40,11 @@ D <- ggAcf(lses_vt$residuals, type = "correlation", lag.max = 5, color = "red", 
   theme_bw()  
 
 E <- ggAcf(hses_vt$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
-  labs(title = "Middle/High SES", x = "Survey year", y = "Autocorrelation (ACF)") + 
+  labs(title = "Middle/High SES", x = "", y = "") + 
   theme_bw()  
 
 F <- ggAcf(sart_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
-  labs(title = "ART <3y", x = "Survey year", y = "") + 
+  labs(title = "ART <3y", x = "Survey year", y = "Autocorrelation (ACF)") + 
   theme_bw()  
 
 G <- ggAcf(lart_vt$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 

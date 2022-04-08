@@ -41,7 +41,7 @@ D <- ggAcf(lses$residuals, type = "correlation", lag.max = 5, color = "red", yli
   theme_bw()
 
 E <- ggAcf(hses$residuals, type = "correlation", lag.max = 5, color = "red", ylim = c(-0.5, 0.5), size = 1) + 
-  labs(title = "Middle/High SES", x = "Survey year", y = "") + 
+  labs(title = "Middle/High SES", x = "", y = "") + 
   theme_bw()
 
 F <- ggAcf(sart$residuals, type = "correlation", lag.max = 5, ylim = c(-0.5, 0.5), size = 1) + 
