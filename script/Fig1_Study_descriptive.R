@@ -47,7 +47,7 @@ C <-  pcvpa.des %>% group_by(nochild5, serogroup) %>% tally() %>%
   ggplot(mapping = aes(x = nochild5, y = serogroup, fill = n)) +
   geom_point(aes(size = n, color = n), shape = 21) +
   theme_bw() +
-  labs(title = "C", x = "# of <5y children in the house", y = "Serogroup in HIV-infected adults") +
+  labs(title = "C", x = "# of <5y children in the house", y = "Serogroup") +
   scale_fill_continuous(type = "viridis") +
   scale_color_continuous(type = "viridis") +  
   theme(axis.text.x = element_text(face = "bold", size = 13), axis.text.y = element_text(face = "bold", size = 13)) +
@@ -60,7 +60,7 @@ D <-  pcvpa.des %>% group_by(as.integer(year(ymd(pcvpa.des$date))), serogroup) %
   ggplot(mapping = aes(x = `as.integer(year(ymd(pcvpa.des$date)))`, y = serogroup, fill = n)) +
   geom_point(aes(size = n, color = n), shape = 21) +
   theme_bw() +
-  labs(title = "D", x = "Year of survey", y = "Serogroup in HIV-infected adults") +
+  labs(title = "D", x = "Year of survey", y = "Serogroup") +
   scale_fill_continuous(type = "viridis") +
   scale_color_continuous(type = "viridis") +  
   theme(axis.text.x = element_text(face = "bold", size = 13), axis.text.y = element_text(face = "bold", size = 13)) +
