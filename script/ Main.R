@@ -1,7 +1,7 @@
 #Written by Deus Thindwa
 #Pneumococcal carriage prevalence in HIV-infected adults in PCV era
 #Generalized additive model.
-#14/12/2020 - 30/06/2021
+#14/12/2020 - 17/12/2021
 
 #=======================================================================
 
@@ -158,20 +158,32 @@ rm(pcvpa.mod1, pcvpa.mod2)
 #descriptive of study population (figure 1)
 source(here("script/Fig1_study_descriptive.R"))
 
-#overall VT carriage dynamics (figure 2)
+#overall and VT carriage dynamics (figure 2)
 source(here("script/Fig2_Overall_VT_prev_crude.R"))
 
 #Risk factor VT carriage dynamics (figure 3)
-source(here("script/Fig3_Overall_VT_prev_risk_factors.R"))
+source(here("script/Fig3a_Overall_VT_prev_risk_factors.R"))
 
-#carriage heterogeneity (figure S3)
-source(here("script/.R"))
+#Risk factor VT carriage dynamics (figure 3)
+source(here("script/Fig3b_Overall_VT_prev_risk_factors.R"))
 
-#multiple carriage (figure S4)
-source(here("script/.R"))
+#carriage heterogeneity (figure S1)
+source(here("script/FigS1_age_time_heterogeneity.R"))
 
-#model autocorrelation (figure S5)
-source(here("script/.R"))
+#multiple carriage (figure S2)
+source(here("script/FigS2_multiple_carriage.R"))
+
+#model autocorrelation (figure S3)
+source(here("scriptFigS3_overall_carriage_ACF/.R"))
               
+#model selection (figure S4)
+source(here("script/FigS4_VT_carriage_ACF.R"))
+
+#model selection (figure S5)
+source(here("script/FigS5_model_selection.R"))
+
 #model selection (figure S6)
-source(here("script/.R"))
+source(here("script/FigS6_age_ART_duration.R"))
+
+
+
