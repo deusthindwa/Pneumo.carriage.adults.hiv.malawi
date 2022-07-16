@@ -1,3 +1,11 @@
+#Written by Deus Thindwa
+#Pneumococcal carriage prevalence in HIV-infected adults in PCV era
+#Generalized additive model.
+#14/12/2020 - 17/12/2021
+
+#=======================================================================
+
+#changes in cotrimoxazole use over time
 A <-
 left_join(
 pcvpa.des %>%
