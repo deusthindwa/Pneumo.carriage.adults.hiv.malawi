@@ -1,5 +1,5 @@
 # Pneumo.carriage.adults.hiv.malawi
-https://doi.org/10.1101/2022.05.12.22274986
+https://doi.org/10.1097/QAD.0000000000003365
 
 # Risk factors for pneumococcal carriage in adults living with HIV on antiretroviral therapy in the infant pneumococcal vaccine era in Malawi.
 
